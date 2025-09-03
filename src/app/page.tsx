@@ -1,103 +1,201 @@
-import Image from "next/image";
+'use client'
+import React from 'react';
+import { motion } from 'framer-motion';
+import { FaQuoteRight, FaBookOpen, FaRegStickyNote } from 'react-icons/fa';
+import Link from 'next/link';
 
-export default function Home() {
+
+
+
+const WritingGuidePage: React.FC = () => {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="relative min-h-screen font-sans text-gray-800 bg-[url(/background.jpeg)] bg-cover bg-center">
+      {/* Header */}
+      <header className="flex items-center justify-between px-10 py-6 shadow-sm bg-white bg-cover bg-center">
+        <img src="/logo.png" alt="ASU Logo" className="h-20" />
+        <nav className="hidden md:flex gap-8 text-lg">
+          <a href="#" className="hover:text-yellow-500">Home</a>
+          <a href="#" className="hover:text-yellow-500">Resources</a>
+          <a href="#" className="hover:text-yellow-500">Tutors</a>
+          <a href="#" className="hover:text-yellow-500">About</a>
+          <a href="#" className="hover:text-yellow-500">Contact</a>
+        </nav>
+        <div className="flex items-center gap-4">
+          <button className="text-black text-lg">Sign in</button>
+          <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800">Get Started</button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </header>
+
+      {/* Hero Section */}
+      <section className="px-6 sm:px-10 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+
+          {/* Left Text Block with Framer Motion */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+          >
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-black">
+              Build your <br /> Paper from <br />
+              <span className="text-yellow-400">Draft to Final.</span>
+            </h1>
+            <p className="mt-6 text-lg text-gray-700 max-w-md">
+              Personalized writing assistance for ASU students. Interactive tools, expert tutoring, and resources to help you excel.
+            </p>
+            <Link href="/EditingPage">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="mt-6 bg-black text-white px-6 py-3 rounded-full text-lg shadow-md transition"
+              >
+                Get Started
+              </motion.button>
+            </Link>
+
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
+            className="relative bg-white shadow-xl p-6 rounded-[32px] border border-black w-full max-w-xl mx-auto"
+          >
+            {/* Floating Notebook Tab */}
+            <div className="absolute -top-5 left-5 hover:scale-105 transition">
+              <div className="bg-gray-300 border border-black text-black text-sm font-semibold px-4 py-1 rounded-full shadow-sm">
+                My Notebook
+              </div>
+            </div>
+
+            {/* Title Input */}
+            <input
+              type="text"
+              placeholder="Your Title Here"
+              className="w-full border border-black rounded-full px-4 py-3 mb-6 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 hover:scale-105 transition transition"
+            />
+
+            {/* Text Area */}
+            <textarea
+              placeholder="Your Text Here"
+              className="w-full border border-black rounded-[20px] p-4 h-36 text-gray-800 placeholder:italic placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 hover:scale-105 transition transition mb-6 resize-none"
+            />
+
+            {/* Save Button */}
+            <div className="text-right">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-yellow-400 px-6 py-2 rounded-full border border-black font-semibold text-black hover:scale-105 transition shadow-sm transition"
+              >
+                Save
+              </motion.button>
+            </div>
+          </motion.div>
+
+        </div>
+      </section>
+
+      <section className="px-6 md:px-10 py-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        {/* Image with Label Overlay */}
+        <div className="relative rounded-2xl overflow-hidden shadow-lg w-full max-w-xl mx-auto transition-transform duration-300 ease-in-out hover:scale-105">
+          <img
+            src="/GuideHero.jpg" // Replace with actual path
+            alt="Writing Center"
+            className="w-full h-auto object-cover"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+          <div className="absolute bottom-5 left-5 bg-yellow-400 text-black text-xl font-bold px-4 py-2 rounded-sm shadow-md">
+            Writing Centers
+          </div>
+        </div>
+
+        <div className="text-left max-w-xl mx-auto">
+          <h2 className="text-4xl font-extrabold text-black leading-tight">
+            About the <span className="text-yellow-400">Writing Guide</span>
+          </h2>
+
+          <p className="mt-6 text-lg font-medium text-gray-700 leading-relaxed">
+            Our comprehensive writing guide is designed specifically for ASU students across all disciplines. Whether you&lsquo;re writing a research paper, literary analysis, lab report, or personal essay, our guide provides step-by-step instructions and examples to help you excel.
+          </p>
+
+          <ul className="mt-6 space-y-3">
+            {[
+              "Structured writing process from brainstorming to final draft",
+              "Discipline-specific writing conventions and formats",
+              "Common pitfalls and how to avoid them",
+              "Expert tips from experienced ASU writing tutors",
+              "Interactive examples and templates you can customize"
+            ].map((text, i) => (
+              <li key={i} className="flex items-start gap-3 text-gray-800 text-base">
+                <div className="w-6 h-6 flex items-center justify-center mt-1 bg-yellow-400 border border-black rounded-full">
+                  <span className="-ml-[0.5px] text-sm font-semibold text-black">{'▶'}</span>
+                </div>
+                <span>{text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+
+      <section className="px-6 md:px-10 py-20">
+        <h2 className="text-center text-4xl font-bold mb-12">
+          Our <span className="text-yellow-400">Writing Tools</span>
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 max-w-7xl mx-auto">
+          {/* Citation Generator */}
+          <div className="bg-white border border-yellow-400 rounded-[24px] p-6 md:p-8 shadow-md flex flex-col justify-between hover:shadow-lg transition hover:scale-105 transition">
+            <div className="flex flex-col gap-3">
+              <FaQuoteRight className="text-3xl text-black" />
+              <h3 className="text-xl md:text-2xl font-bold">Citation Generator</h3>
+              <p className="text-gray-700">
+                Generate perfect citations in APA, MLA, Chicago, and more formats with our easy-to-use tool.
+              </p>
+            </div>
+            <button className="mt-6 bg-black text-white font-semibold px-6 py-2 rounded-full w-fit self-start shadow hover:scale-105 transition">
+              Try Now
+            </button>
+          </div>
+
+          {/* Writing Guide */}
+          <div className="bg-white border border-yellow-400 rounded-[24px] p-6 md:p-8 shadow-md flex flex-col justify-between hover:shadow-lg transition hover:scale-105 transition">
+            <div className="flex flex-col gap-3">
+              <FaBookOpen className="text-3xl text-black" />
+              <h3 className="text-xl md:text-2xl font-bold">Writing Guide</h3>
+              <p className="text-gray-700">
+                Get inspired with our interactive writing guide to overcome writer&apos;s block.
+              </p>
+            </div>
+            <button className="mt-6 bg-black text-white font-semibold px-6 py-2 rounded-full w-fit self-start shadow hover:scale-105 transition">
+              Try Now
+            </button>
+          </div>
+
+          {/* Notebook */}
+          <div className="bg-white border border-yellow-400 rounded-[24px] p-6 md:p-8 shadow-md flex flex-col justify-between hover:shadow-lg transition hover:scale-105 transition">
+            <div className="flex flex-col gap-3">
+              <FaRegStickyNote className="text-3xl text-black" />
+              <h3 className="text-xl md:text-2xl font-bold">Notebook</h3>
+              <p className="text-gray-700">
+                Save your progress, notes, and drafts in your personal notebook as you work.
+              </p>
+            </div>
+            <button className="mt-6 bg-black text-white font-semibold px-6 py-2 rounded-full w-fit self-start shadow hover:scale-105 transition">
+              Try Now
+            </button>
+          </div>
+        </div>
+      </section>
+
+
+      {/* Footer */}
+      <footer className="bg-yellow-400 py-6 px-10 text-sm text-black text-center">
+        <div className="mb-2">Maps and Locations | Jobs | Directory | Contact ASU | My ASU</div>
+        <div className="text-xs">© 2025 Arizona State University | Privacy | Terms of Use | Emergency | COVID-19 Information</div>
       </footer>
     </div>
   );
-}
+};
+
+export default WritingGuidePage;
