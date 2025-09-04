@@ -36,14 +36,12 @@ export default function Sidebar() {
 
     return (
         <div className="w-80 bg-white border rounded-xl shadow-md overflow-hidden">
-            {/* Header */}
             <div className="bg-black text-white px-4 py-3">
                 <h2 className="text-lg font-semibold">ASU Writing Guide</h2>
                 <p className="text-sm">My ENG108 Assignment</p>
                 <p className="text-xl font-semibold py-1">Editing</p>
             </div>
 
-            {/* Steps */}
             <div className="divide-y">
                 {steps.map((step) => (
                     <div key={step.id}>
@@ -66,8 +64,7 @@ export default function Sidebar() {
                             </span>
                         </button>
 
-                        {/* Children (with sliding animation) */}
-                        {step.children && expanded === step.id && (
+                        {step.children && expanded != step.id && (
                             <div className="mt-2 mb-2 space-y-3 px-2">
                                 {step.children.map((child) => (
                                     <button
