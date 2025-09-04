@@ -22,15 +22,15 @@ const steps = [
         icon: <Edit size={18} />,
         time: "3 mins read",
         children: [
-            { id: "grammar", label: "Checking my grammar and punctuation", time: "3 mins read" },
-            { id: "flow", label: "Looking at the flow between my sentences and paragraphs", time: "3 mins read" },
-            { id: "word", label: "Considering my word choice", time: "3 mins read" },
+            { id: "grammar", label: "Checking my grammar and punctuation", time: "3 mins read", url: "/EditingPage2" },
+            { id: "flow", label: "Looking at the flow between my sentences and paragraphs", time: "3 mins read", url: "/editing/flow" },
+            { id: "word", label: "Considering my word choice", time: "3 mins read", url: "/editing/word" },
         ],
     },
     { id: "citing", label: "Citing", icon: <ListChecks size={18} />, time: "3 mins read" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ currentStep = "editing" }) {
     const [active, setActive] = useState("editing");
     const [expanded, setExpanded] = useState<string | null>("editing");
 
@@ -64,20 +64,23 @@ export default function Sidebar() {
                             </span>
                         </button>
 
-                        {step.children && expanded != step.id && (
+                        {step.children && expanded === step.id && (
                             <div className="mt-2 mb-2 space-y-3 px-2">
                                 {step.children.map((child) => (
-                                    <button
+                                    <a
                                         key={child.id}
+                                        href={child.url}
                                         onClick={() => setActive(child.id)}
-                                        className={`flex w-full items-center justify-between px-4 py-3 text-left text-sm rounded-lg shadow-sm no-scrollbar transition ${active === child.id ? "bg-gray-300" : "bg-[#E4E4E4] hover:bg-gray-200"
+                                        className={`flex w-full items-center justify-between px-4 py-3 text-left text-sm rounded-lg shadow-sm transition ${currentStep === child.id
+                                                ? "bg-[#FFC627] text-black font-semibold"
+                                                : "bg-[#E4E4E4] hover:bg-gray-200"
                                             }`}
                                     >
                                         <span className="font-medium flex-1 pr-4">{child.label}</span>
                                         <span className="shrink-0 text-xs bg-black text-white rounded-full px-3 py-1">
                                             {child.time}
                                         </span>
-                                    </button>
+                                    </a>
                                 ))}
                             </div>
                         )}

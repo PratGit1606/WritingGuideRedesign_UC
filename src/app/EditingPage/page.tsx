@@ -5,6 +5,7 @@ import ProgressSteps from '../components/ProgressSteps';
 import {
   Search,
 } from "lucide-react";
+import Link from 'next/link';
 
 const EditingPage = () => {
   return (
@@ -12,7 +13,7 @@ const EditingPage = () => {
       <header className="flex items-center justify-between px-10 py-4 shadow-sm bg-white bg-cover bg-center">
         <img src="/logo.png" alt="ASU Logo" className="h-20" />
         <nav className="hidden md:flex gap-8 text-lg">
-          <a href="#" className="hover:text-yellow-500">Home</a>
+          <Link href="/" className="hover:text-yellow-500">Home</Link>
           <a href="#" className="hover:text-yellow-500">Resources</a>
           <a href="#" className="hover:text-yellow-500">Tutors</a>
           <a href="#" className="hover:text-yellow-500">About</a>
@@ -144,7 +145,7 @@ const EditingPage = () => {
               Go Back to Previous Section: <br /> Revision
             </a>
             <a
-              href="/editing/section1"
+              href="/EditingPage2"
               className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
             >
               Continue to Section 1 of Editing
