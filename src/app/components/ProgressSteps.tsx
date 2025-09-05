@@ -9,7 +9,11 @@ export default function ProgressSteps({ progress = 0 }) {
     { title: "Researching", subtitle: "Completed 4 times", status: "done" },
     { title: "Drafting", subtitle: "Completed", status: "done" },
     { title: "Revision", subtitle: "Completed", status: "done" },
-    { title: "Editing", subtitle: "In Progress", status: "progress" },
+    { 
+      title: "Editing", 
+      subtitle: progress === 100 ? "Completed" : "In Progress", 
+      status: progress === 100 ? "done" : "progress" 
+    },
     { title: "Citing", subtitle: "Pending", status: "upcoming" },
     { title: "Final", subtitle: "Pending", status: "upcoming" },
   ];

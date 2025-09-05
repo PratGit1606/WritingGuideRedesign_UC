@@ -23,8 +23,8 @@ const steps = [
         time: "3 mins read",
         children: [
             { id: "grammar", label: "Checking my grammar and punctuation", time: "3 mins read", url: "/EditingPage2" },
-            { id: "flow", label: "Looking at the flow between my sentences and paragraphs", time: "3 mins read", url: "/editing/flow" },
-            { id: "word", label: "Considering my word choice", time: "3 mins read", url: "/editing/word" },
+            { id: "flow", label: "Looking at the flow between my sentences and paragraphs", time: "3 mins read", url: "/EditingPage3" },
+            { id: "word", label: "Considering my word choice", time: "3 mins read", url: "/EditingPage4" },
         ],
     },
     { id: "citing", label: "Citing", icon: <ListChecks size={18} />, time: "3 mins read" },
