@@ -3,6 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FaQuoteRight, FaBookOpen, FaRegStickyNote } from 'react-icons/fa';
 import Link from 'next/link';
+import NotebookBlock from './components/Notebook';
 
 
 
@@ -10,7 +11,6 @@ import Link from 'next/link';
 const WritingGuidePage: React.FC = () => {
   return (
     <div className="relative min-h-screen font-sans text-gray-800 bg-[url(/background.jpeg)] bg-cover bg-center">
-      {/* Header */}
       <header className="flex items-center justify-between px-10 py-6 shadow-sm bg-white bg-cover bg-center">
         <img src="/logo.png" alt="ASU Logo" className="h-20" />
         <nav className="hidden md:flex gap-8 text-lg">
@@ -26,11 +26,9 @@ const WritingGuidePage: React.FC = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="px-6 sm:px-10 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
 
-          {/* Left Text Block with Framer Motion */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -55,43 +53,7 @@ const WritingGuidePage: React.FC = () => {
 
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
-            className="relative bg-white shadow-xl p-6 rounded-[32px] border border-black w-full max-w-xl mx-auto"
-          >
-            {/* Floating Notebook Tab */}
-            <div className="absolute -top-5 left-5 hover:scale-105 transition">
-              <div className="bg-gray-300 border border-black text-black text-sm font-semibold px-4 py-1 rounded-full shadow-sm">
-                My Notebook
-              </div>
-            </div>
-
-            {/* Title Input */}
-            <input
-              type="text"
-              placeholder="Your Title Here"
-              className="w-full border border-black rounded-full px-4 py-3 mb-6 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 hover:scale-105 transition transition"
-            />
-
-            {/* Text Area */}
-            <textarea
-              placeholder="Your Text Here"
-              className="w-full border border-black rounded-[20px] p-4 h-36 text-gray-800 placeholder:italic placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 hover:scale-105 transition transition mb-6 resize-none"
-            />
-
-            {/* Save Button */}
-            <div className="text-right">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-yellow-400 px-6 py-2 rounded-full border border-black font-semibold text-black hover:scale-105 transition shadow-sm transition"
-              >
-                Save
-              </motion.button>
-            </div>
-          </motion.div>
+          <NotebookBlock />
 
         </div>
       </section>
