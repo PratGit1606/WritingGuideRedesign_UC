@@ -143,9 +143,12 @@ const WritingGuidePage: React.FC = () => {
                 Save your progress, notes, and drafts in your personal notebook as you work.
               </p>
             </div>
-            <button className="mt-6 bg-black text-white font-semibold px-6 py-2 rounded-full w-fit self-start shadow hover:scale-105 transition">
+            <Link
+              href="/Notebook"
+              className="mt-6 bg-black text-white font-semibold px-6 py-2 rounded-full w-fit self-start shadow hover:scale-105 transition"
+            >
               Try Now
-            </button>
+            </Link>
           </div>
         </div>
       </section>
