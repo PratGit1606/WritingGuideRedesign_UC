@@ -10,13 +10,14 @@ export default function NotebookPage() {
   const [activeNoteId, setActiveNoteId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("/notes.json")
+    fetch("/api/save-note", { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
-        setNotes(data);
-        if (data.length > 0) setActiveNoteId(data[0].id);
+        setNotes(data.notes);
+        if (data.notes.length > 0) setActiveNoteId(data.notes[0].id);
       });
   }, []);
+
 
   const activeNote = notes.find((note) => note.id === activeNoteId);
 

@@ -143,7 +143,6 @@ export default function Page() {
             </motion.div>
           );
 
-          // If this step has a link, wrap it
           return link ? (
             <Link key={step.id} href={link} className="cursor-pointer">
               {content}
