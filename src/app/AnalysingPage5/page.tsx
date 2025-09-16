@@ -1,8 +1,8 @@
 'use client'
 import React from 'react';
 import Image from 'next/image';
-import Sidebar from '../components/Sidebar';
-import ProgressSteps from '../components/ProgressSteps';
+import AnalysingSidebar from '../components/AnalysingSidebar';
+import ProgressSteps from '../components/AnalysingProgressSteps';
 import {
     Search,
 } from "lucide-react";
@@ -23,32 +23,33 @@ const EditingPage = () => {
     const items = [
         {
             id: 1,
-            title: "Find every semicolon and double-check if it is used correctly.",
-            desc: "Review your text for grammatical errors and proper punctuation.",
+            title: "Carefully read the assignment description and identify key verbs and nouns.",
+            desc: "Look for action words (e.g., argue, explain, analyze) and important terms your professor has included.",
         },
         {
             id: 2,
-            title:
-                "Highlight every sentence that is more than two lines long. Look for long sentences together and edit to add variety.",
+            title: "Determine the genre or type of writing expected.",
+            desc: "Is it an argumentative essay, a research report, a reflection, or something else?",
         },
         {
             id: 3,
-            title:
-                "I only have capital letters where I start a sentence or use a proper noun.",
+            title: "Identify your intended audience and their needs.",
+            desc: "Think about what knowledge they already have and what context or definitions they might need.",
         },
         {
             id: 4,
-            title:
-                "Search for every usage of the word “like” and remove any that are used casually.",
+            title: "Clarify the overall purpose of the assignment.",
+            desc: "Summarize what you are trying to accomplish and how your work will be evaluated.",
         },
     ];
-    type SkillKey = "punctuation" | "sentence" | "capitalization" | "wordChoice";
+
+    type SkillKey = "verbs" | "nouns" | "audience" | "purpose";
 
     const [skills, setSkills] = useState<Record<SkillKey, string>>({
-        punctuation: "",
-        sentence: "",
-        capitalization: "",
-        wordChoice: "",
+        verbs: "",
+        nouns: "",
+        audience: "",
+        purpose: "",
     });
 
     const handleSelect = (skill: SkillKey, level: string) => {
@@ -58,10 +59,10 @@ const EditingPage = () => {
     const levels = ["Low", "Medium", "High"];
 
     const categories: { id: SkillKey; label: string }[] = [
-        { id: "punctuation", label: "Punctuation Precision" },
-        { id: "sentence", label: "Sentence Structure Variety" },
-        { id: "capitalization", label: "Capitalization Consistency" },
-        { id: "wordChoice", label: "Word Choice Awareness" },
+        { id: "verbs", label: "Identifying Verbs and Actions" },
+        { id: "nouns", label: "Recognizing Nouns and Key Terms" },
+        { id: "audience", label: "Knowing the Audience" },
+        { id: "purpose", label: "Clarifying Assignment Purpose" },
     ];
 
     return (
@@ -89,7 +90,7 @@ const EditingPage = () => {
 
             <div className="flex w-full mx-auto px-10 mt-12 gap-8">
                 <div className="w-80 sticky top-24 self-start">
-                    <Sidebar currentStep='editing' />
+                    <AnalysingSidebar currentStep='analysing' />
                 </div>
 
                 <div className="flex-1 bg-white rounded-xl shadow-lg p-8 min-h-screen">
@@ -111,7 +112,7 @@ const EditingPage = () => {
                         <ProgressSteps progress={100} />
                     </div>
                     <div className="py-10">
-                        <Image src="/EditingHeader.png" alt="Editing Header"
+                        <Image src="/AnalysingHeader.png" alt="Analysing Header"
                             width={1200}
                             height={400}
                             className="rounded-2xl shadow-md" /></div>
@@ -119,7 +120,7 @@ const EditingPage = () => {
                         <div className="bg-amber-50 border border-amber-200 rounded-xl text-center py-4 px-6 shadow-sm">
                             <h2 className="text-xl font-bold">Boom! You crushed it!</h2>
                             <p className="text-gray-800">
-                                Your editing game is officially on point – keep slaying those
+                                Your analysing game is officially on point – keep slaying those
                                 sentences
                             </p>
                         </div>
@@ -166,7 +167,7 @@ const EditingPage = () => {
                         </div>
                     </div>
 
-                    
+
                     <div className="space-y-8 py-8">
                         <div className="text-center">
                             <h2 className="text-2xl font-bold inline-block px-6 py-2 border-4 border-black">
@@ -219,20 +220,17 @@ const EditingPage = () => {
                             </p>
                             <ol className="list-decimal list-inside space-y-2 text-gray-800">
                                 <li>
-                                    Read your paper aloud, feeling confident in the meaning and word
-                                    choice in each sentence.
+                                    Understand the genre and expectations of your assignment
                                 </li>
                                 <li>
-                                    Find and correct errors that may interfere with your audience&apos;s
-                                    understanding of your work.
+                                    Understand who it is I am trying to speak to
                                 </li>
                                 <li>
-                                    Consider your audience and purpose for writing and adapt your word
-                                    choice appropriately.
+                                    Understand how my assignment will be graded and important metrics to consider when writing.
                                 </li>
                             </ol>
                             <p className="mt-4 font-semibold text-red-700">
-                                All set? Let&apos;s move on to Citing!
+                                All set? Let&apos;s move on to Brainstorming!
                             </p>
                         </div>
                     </div>
@@ -242,14 +240,14 @@ const EditingPage = () => {
                             href="/EdifingPage4"
                             className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center"
                         >
-                            Go Back to Previous Section: <br /> Section 3 of Editing
+                            Go Back to Previous Section: <br /> Section 3 of Analysing
                         </a>
                         <a
                             href="/app"
                             className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
                         >
-                            Continue to Citation
-                        </a>
+                            Continue to Brainstorming
+                        </a>   
                     </div>
                 </div>
             </div>

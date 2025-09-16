@@ -1,20 +1,32 @@
 'use client'
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { FaQuoteRight, FaBookOpen, FaRegStickyNote } from 'react-icons/fa';
 import Link from 'next/link';
 import NotebookBlock from './components/Notebook';
-
-
+import { useRouter } from 'next/navigation';
+import Questionnaire from './components/Questionnaire';
 
 
 const WritingGuidePage: React.FC = () => {
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      router.push('/Opening');
+    }, 4000);
+  };
   return (
     <div className="relative min-h-screen font-sans text-gray-800 bg-[url(/background.jpeg)] bg-cover bg-center">
-      <header className="flex items-center justify-between px-10 py-6 shadow-sm bg-white bg-cover bg-center">
+      <header className="flex items-center justify-between px-10 shadow-sm bg-white bg-cover bg-center">
         <img src="/logo.png" alt="ASU Logo" className="h-20" />
         <nav className="hidden md:flex gap-8 text-lg">
-          <a href="#" className="hover:text-yellow-500">Home</a>
+          <Link href="/" className="hover:text-yellow-500">Home</Link>
           <a href="#" className="hover:text-yellow-500">Resources</a>
           <a href="#" className="hover:text-yellow-500">Tutors</a>
           <a href="#" className="hover:text-yellow-500">About</a>
@@ -22,7 +34,7 @@ const WritingGuidePage: React.FC = () => {
         </nav>
         <div className="flex items-center gap-4">
           <button className="text-black text-lg">Sign in</button>
-          <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800">Get Started</button>
+          <button onClick={() => setShowPopup(true)} className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800">Get Started</button>
         </div>
       </header>
 
@@ -41,15 +53,14 @@ const WritingGuidePage: React.FC = () => {
             <p className="mt-6 text-lg text-gray-700 max-w-md">
               Personalized writing assistance for ASU students. Interactive tools, expert tutoring, and resources to help you excel.
             </p>
-            <Link href="/EditingPage">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="mt-6 bg-black text-white px-6 py-3 rounded-full text-lg shadow-md transition"
-              >
-                Get Started
-              </motion.button>
-            </Link>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowPopup(true)}
+              className="mt-6 bg-black text-white px-6 py-3 rounded-full text-lg shadow-md transition"
+            >
+              Get Started
+            </motion.button>
 
           </motion.div>
 
@@ -57,6 +68,60 @@ const WritingGuidePage: React.FC = () => {
 
         </div>
       </section>
+
+      <AnimatePresence>
+        {showPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[url(/background.jpeg)] bg-cover bg-center bg-opacity-60"
+            onClick={() => setShowPopup(false)} 
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white max-w-2xl w-full mx-4 rounded-2xl shadow-xl p-8 relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {loading ? (
+                <div className="flex flex-col items-center justify-center py-20">
+                  <div className="w-12 h-12 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin mb-6"></div>
+                  <p className="text-lg font-semibold text-gray-700">Sorting your path...</p>
+                </div>
+              ) : (
+                <>
+                  <h2 className="text-3xl font-bold text-center text-black mb-6">
+                    The Quest Begins ✨
+                  </h2>
+                  <p className="text-center text-gray-600 mb-8">
+                    Choose one path at a time to guide your writing journey.
+                  </p>
+
+                  <Questionnaire />
+                  {/* Buttons */}
+                  <div className="mt-10 flex justify-between">
+                    <Link
+                      href="/Opening"
+                      className="px-6 py-2 rounded-full border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
+                    >
+                      Skip
+                    </Link>
+                    <button
+                      onClick={handleSubmit}
+                      className="px-6 py-2 bg-yellow-400 text-black font-semibold rounded-full shadow hover:bg-yellow-500 transition"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <section className="px-6 md:px-10 py-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         {/* Image with Label Overlay */}
@@ -129,9 +194,9 @@ const WritingGuidePage: React.FC = () => {
                 Get inspired with our interactive writing guide to overcome writer&apos;s block.
               </p>
             </div>
-            <button className="mt-6 bg-black text-white font-semibold px-6 py-2 rounded-full w-fit self-start shadow hover:scale-105 transition">
+            <Link href="/Opening" className="mt-6 bg-black text-white font-semibold px-6 py-2 rounded-full w-fit self-start shadow hover:scale-105 transition">
               Try Now
-            </button>
+            </Link>
           </div>
 
           {/* Notebook */}

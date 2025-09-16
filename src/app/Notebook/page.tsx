@@ -67,6 +67,20 @@ export default function NotebookPage() {
     setActiveNoteId(data.note.id);
   };
 
+  const handleDelete = async () => {
+    if (!activeNote) return;
+
+    await fetch("/api/save-note", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: activeNote.id }),
+    });
+
+    setNotes((prev) => prev.filter((note) => note.id !== activeNote.id));
+    setActiveNoteId(null);
+  };
+
+
   return (
     <div
       className="min-h-screen flex flex-col bg-[url(/background.jpeg)] bg-cover bg-center text-black"
@@ -104,11 +118,10 @@ export default function NotebookPage() {
               <div
                 key={note.id}
                 onClick={() => setActiveNoteId(note.id)}
-                className={`p-4 rounded-xl shadow-sm border cursor-pointer transition ${
-                  note.id === activeNoteId
-                    ? "bg-[#FFC627] text-black"
-                    : "bg-white hover:bg-gray-100"
-                }`}
+                className={`p-4 rounded-xl shadow-sm border cursor-pointer transition ${note.id === activeNoteId
+                  ? "bg-[#FFC627] text-black"
+                  : "bg-white hover:bg-gray-100"
+                  }`}
               >
                 <h3 className="text-sm font-semibold">{note.title}</h3>
                 <p className="text-xs text-black line-clamp-2 mt-1">
@@ -152,7 +165,13 @@ export default function NotebookPage() {
                   className="w-full border border-gray-300 rounded-lg p-3 h-40 bg-white resize-none text-black"
                 />
               </div>
-              <div className="text-right">
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={handleDelete}
+                  className="bg-black text-white px-6 py-2 rounded-full border border-black font-semibold hover:bg-red-800"
+                >
+                  Delete
+                </button>
                 <button
                   onClick={handleSave}
                   className="bg-[#FFC627] px-6 py-2 rounded-full border border-black font-semibold hover:bg-yellow-500 text-black"
@@ -160,6 +179,7 @@ export default function NotebookPage() {
                   Save
                 </button>
               </div>
+
             </div>
           ) : (
             <p className="p-6">No note selected</p>

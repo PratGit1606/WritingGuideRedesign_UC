@@ -7,11 +7,12 @@ import {
 } from "lucide-react";
 import Tabs from '../components/Tabs';
 import GrammarExercise from '../components/Editing1Check';
+import Link from 'next/link';
 
 const EditingPage = () => {
     return (
         <div className="relative min-h-screen font-sans text-gray-800 bg-[url(/background.jpeg)] bg-cover bg-center">
-            <header className="flex items-center justify-between px-10 py-4 shadow-sm bg-white bg-cover bg-center">
+            <header className="flex items-center justify-between px-10 shadow-sm bg-white bg-cover bg-center">
                 <Image
                     src="/logo.png"
                     alt="ASU Logo"
@@ -20,7 +21,7 @@ const EditingPage = () => {
                     className="h-20 w-auto"
                 />
                 <nav className="hidden md:flex gap-8 text-lg">
-                    <a href="#" className="hover:text-yellow-500">Home</a>
+                    <Link href="/" className="hover:text-yellow-500">Home</Link>
                     <a href="#" className="hover:text-yellow-500">Resources</a>
                     <a href="#" className="hover:text-yellow-500">Tutors</a>
                     <a href="#" className="hover:text-yellow-500">About</a>

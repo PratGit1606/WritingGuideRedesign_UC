@@ -10,7 +10,7 @@ import Link from 'next/link';
 const EditingPage = () => {
   return (
     <div className="relative min-h-screen font-sans text-gray-800 bg-[url(/background.jpeg)] bg-cover bg-center">
-      <header className="flex items-center justify-between px-10 py-4 shadow-sm bg-white bg-cover bg-center">
+      <header className="flex items-center justify-between px-10 shadow-sm bg-white bg-cover bg-center">
         <img src="/logo.png" alt="ASU Logo" className="h-20" />
         <nav className="hidden md:flex gap-8 text-lg">
           <Link href="/" className="hover:text-yellow-500">Home</Link>
