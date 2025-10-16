@@ -10,6 +10,8 @@ import {
     ListChecks,
 } from "lucide-react";
 
+import Link from "next/link"
+
 const steps = [
     { id: "analysing", label: "Analysing", icon: <Search size={18} />, time: "3 mins read" },
     { id: "brainstorming", label: "Brainstorming", icon: <BookOpen size={18} />, time: "3 mins read" },
@@ -91,9 +93,11 @@ export default function Sidebar({ currentStep = "editing" }) {
 
             {/* Notebook button */}
             <div className="p-4">
+                <Link href = "/Notebook">
                 <button className="w-full bg-black text-white py-2 rounded-lg font-medium hover:bg-gray-800 transition">
                     My Notebook
                 </button>
+                </Link>
             </div>
         </div>
     );
