@@ -6,32 +6,9 @@ import {
     Search,
 } from "lucide-react";
 import Tabs from '../components/Tabs';
-import Link from 'next/link';
-
 const EditingPage = () => {
     return (
         <div className="relative min-h-screen font-sans text-gray-800 bg-[url(/background.jpeg)] bg-cover bg-center">
-            <header className="flex items-center justify-between px-10 shadow-sm bg-white bg-cover bg-center">
-                <Image
-                    src="/logo.png"
-                    alt="ASU Logo"
-                    width={80}
-                    height={80}
-                    className="h-20 w-auto"
-                />
-                <nav className="hidden md:flex gap-8 text-lg">
-                    <Link href="/" className="hover:text-yellow-500">Home</Link>
-                    <a href="#" className="hover:text-yellow-500">Resources</a>
-                    <a href="#" className="hover:text-yellow-500">Tutors</a>
-                    <a href="#" className="hover:text-yellow-500">About</a>
-                    <a href="#" className="hover:text-yellow-500">Contact</a>
-                </nav>
-                <div className="flex items-center gap-4">
-                    <button className="text-black text-lg">Sign in</button>
-                    <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800">Get Started</button>
-                </div>
-            </header>
-
             <div className="flex w-full mx-auto px-10 mt-12 gap-8">
                 <div className="w-80 sticky top-24 self-start">
                     <Sidebar currentStep='word' />

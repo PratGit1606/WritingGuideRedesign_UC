@@ -1,15 +1,15 @@
 'use client'
 import React from 'react';
 import Image from 'next/image';
-import AnalysingSidebar from '../components/Sidebar';
+import Sidebar from '../components/Sidebar';
 import ProgressSteps from '../components/AnalysingProgressSteps';
 import {
     Search,
 } from "lucide-react";
 import { useState } from "react";
+import Link from 'next/link';
 
-
-const EditingPage = () => {
+const BrainstormingPage5 = () => {
 
     const [completed, setCompleted] = useState<number[]>([]);
 
@@ -22,33 +22,29 @@ const EditingPage = () => {
     const items = [
         {
             id: 1,
-            title: "Carefully read the assignment description and identify key verbs and nouns.",
-            desc: "Look for action words (e.g., argue, explain, analyze) and important terms your professor has included.",
+            title: "I've written down every idea that comes to mind — no filtering yet.",
         },
         {
             id: 2,
-            title: "Determine the genre or type of writing expected.",
-            desc: "Is it an argumentative essay, a research report, a reflection, or something else?",
+            title: "I've explored different directions I could take with my assignment.",
         },
         {
             id: 3,
-            title: "Identify your intended audience and their needs.",
-            desc: "Think about what knowledge they already have and what context or definitions they might need.",
+            title: "I've considered how my ideas connect to my audience.",
         },
         {
             id: 4,
-            title: "Clarify the overall purpose of the assignment.",
-            desc: "Summarize what you are trying to accomplish and how your work will be evaluated.",
+            title: "I've chosen the strongest ideas to develop further.",
         },
     ];
 
-    type SkillKey = "verbs" | "nouns" | "audience" | "purpose";
+    type SkillKey = "ideaGen" | "creative" | "relevance" | "audience";
 
     const [skills, setSkills] = useState<Record<SkillKey, string>>({
-        verbs: "",
-        nouns: "",
+        ideaGen: "",
+        creative: "",
+        relevance: "",
         audience: "",
-        purpose: "",
     });
 
     const handleSelect = (skill: SkillKey, level: string) => {
@@ -58,10 +54,10 @@ const EditingPage = () => {
     const levels = ["Low", "Medium", "High"];
 
     const categories: { id: SkillKey; label: string }[] = [
-        { id: "verbs", label: "Identifying Verbs and Actions" },
-        { id: "nouns", label: "Recognizing Nouns and Key Terms" },
-        { id: "audience", label: "Knowing the Audience" },
-        { id: "purpose", label: "Clarifying Assignment Purpose" },
+        { id: "ideaGen", label: "Idea Generation" },
+        { id: "creative", label: "Creative Exploration" },
+        { id: "relevance", label: "Relevance to Assignment" },
+        { id: "audience", label: "Audience Connection" },
     ];
 
     return (
@@ -69,7 +65,7 @@ const EditingPage = () => {
 
             <div className="flex w-full mx-auto px-10 mt-12 gap-8">
                 <div className="w-80 sticky top-24 self-start">
-                    <AnalysingSidebar currentStep='analysing' />
+                    <Sidebar currentStep='analysing' />
                 </div>
 
                 <div className="flex-1 bg-white rounded-xl shadow-lg p-8 min-h-screen">
@@ -83,7 +79,7 @@ const EditingPage = () => {
                                 type="text"
                                 id="simple-search"
                                 className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-3 text-sm text-gray-700 placeholder-gray-400 focus:border-gray-400 focus:ring-0"
-                                placeholder="Writing"
+                                placeholder="Reflect on your brainstorming progress..."
                             />
                         </div>
                     </form>
@@ -91,26 +87,27 @@ const EditingPage = () => {
                         <ProgressSteps progress={100} />
                     </div>
                     <div className="py-10">
-                        <Image src="/AnalysingHeader.png" alt="Analysing Header"
+                        <Image src="/AnalysingHeader.png" alt="Brainstorming Header"
                             width={1200}
                             height={400}
                             className="rounded-2xl shadow-md" /></div>
+
+                    {/* Completion banner */}
                     <div className="space-y-8">
                         <div className="bg-amber-50 border border-amber-200 rounded-xl text-center py-4 px-6 shadow-sm">
-                            <h2 className="text-xl font-bold">Boom! You crushed it!</h2>
-                            <p className="text-gray-800">
-                                Your analysing game is officially on point – keep slaying those
-                                sentences
-                            </p>
+                            <h2 className="text-xl font-bold">Checkpoints Achieved!</h2>
+                            <p className="text-gray-800 mt-2">Nice work — you’ve finished Brainstorming. Review the checklist and rate your confidence.</p>
                         </div>
 
-                        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
-                            <div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-shrink-0">
-                                <h2 className="text-2xl font-bold mb-4">Checkpoints Achieved!</h2>
-                                <img
+                        {/* Checklist + illustration */}
+                        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8">
+                            <div className="flex-shrink-0">
+                                <Image
                                     src="/notebook.png"
                                     alt="Notebook Checklist"
-                                    className="w-40 sm:w-48 lg:w-56 h-auto"
+                                    width={220}
+                                    height={220}
+                                    className="object-contain"
                                 />
                             </div>
 
@@ -119,8 +116,8 @@ const EditingPage = () => {
                                     <button
                                         key={item.id}
                                         onClick={() => toggleItem(item.id)}
-                                        className={`w-full flex items-start gap-3 p-4 border rounded-lg shadow-sm text-left transition ${completed.includes(item.id)
-                                            ? "bg-green-100 border-green-400"
+                                        className={`w-full flex items-start gap-4 p-4 border rounded-lg shadow-sm text-left transition ${completed.includes(item.id)
+                                            ? "bg-green-50 border-green-300"
                                             : "bg-white hover:bg-gray-50"
                                             }`}
                                     >
@@ -136,9 +133,6 @@ const EditingPage = () => {
                                         </div>
                                         <div>
                                             <p className="font-semibold">{item.title}</p>
-                                            {item.desc && (
-                                                <p className="text-sm text-gray-600 mt-1">{item.desc}</p>
-                                            )}
                                         </div>
                                     </button>
                                 ))}
@@ -146,7 +140,7 @@ const EditingPage = () => {
                         </div>
                     </div>
 
-
+                    {/* Skill confidence grid */}
                     <div className="space-y-8 py-8">
                         <div className="text-center">
                             <h2 className="text-2xl font-bold inline-block px-6 py-2 border-4 border-black">
@@ -198,35 +192,30 @@ const EditingPage = () => {
                                 By the time you&apos;re done with this step, you should be able to:
                             </p>
                             <ol className="list-decimal list-inside space-y-2 text-gray-800">
-                                <li>
-                                    Understand the genre and expectations of your assignment
-                                </li>
-                                <li>
-                                    Understand who it is I am trying to speak to
-                                </li>
-                                <li>
-                                    Understand how my assignment will be graded and important metrics to consider when writing.
-                                </li>
+                                <li>Identify a topic and thesis that matches your assignment description.</li>
+                                <li>Create an outline or mind-map of your assignment based on your thesis.</li>
+                                <li>Develop a short research plan based on your outline/mind map.</li>
                             </ol>
                             <p className="mt-4 font-semibold text-red-700">
-                                All set? Let&apos;s move on to Brainstorming!
+                                All set? Let&apos;s move on to Researching!
                             </p>
                         </div>
                     </div>
 
+                    {/* Navigation */}
                     <div className="flex justify-between items-center p-6">
-                        <a
-                            href="/EdifingPage4"
+                        <Link
+                            href="/BrainstormingPage4"
                             className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center"
                         >
-                            Go Back to Previous Section: <br /> Section 3 of Analysing
-                        </a>
-                        <a
+                            Go Back to Previous Section
+                        </Link>
+                        <Link
                             href="/app"
                             className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
                         >
-                            Continue to Brainstorming
-                        </a>   
+                            Continue to Researching
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -234,4 +223,4 @@ const EditingPage = () => {
     );
 };
 
-export default EditingPage;
+export default BrainstormingPage5;

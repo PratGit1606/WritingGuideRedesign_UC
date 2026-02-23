@@ -1,22 +1,20 @@
 import React from 'react';
 import Image from 'next/image';
-import AnalysingSidebar from '../components/Sidebar';
-import {
-    Search,
-} from "lucide-react";
+import Sidebar from '../components/Sidebar';
+import { Search } from "lucide-react";
 import ProgressSteps from '../components/AnalysingProgressSteps';
 import Link from 'next/link';
 
-const AnalysingPage = () => {
+const RevisionPage = () => {
     return (
         <div className="relative min-h-screen font-sans text-gray-800 bg-[url(/background.jpeg)] bg-cover bg-center">
             <div className="flex w-full mx-auto px-10 mt-12 gap-8">
                 <div className="w-80 sticky top-24 self-start">
-                    <AnalysingSidebar />
+                    <Sidebar />
                 </div>
 
                 <div className="flex-1 bg-white rounded-xl shadow-lg p-8 min-h-screen">
-                    <form className="flex w-full mx-auto w-full mb-6">
+                    <form className="flex w-full mx-auto mb-6">
                         <div className="relative w-full">
                             <div className="absolute left-0 inset-y-0 flex items-center pl-3 pointer-events-none">
                                 <Search className="w-5 h-5 text-gray-400" />
@@ -24,48 +22,54 @@ const AnalysingPage = () => {
 
                             <input
                                 type="text"
-                                id="simple-search"
+                                id="revision-search"
                                 className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-3 text-sm text-gray-700 placeholder-gray-400 focus:border-gray-400 focus:ring-0"
-                                placeholder="Writing"
+                                placeholder="Search revision tips..."
                             />
                         </div>
                     </form>
+
                     <div className="py-6">
-                        <ProgressSteps />
+                        <ProgressSteps progress={0} />
                     </div>
+
                     <div className="py-10">
-                        <Image src="/AnalysingHeader.png" alt="Analysing Header"
+                        <Image
+                            src="/AnalysingHeader.png"
+                            alt="Revision Header — polish and perfect"
                             width={1200}
                             height={400}
-                            className="rounded-2xl shadow-md" /></div>
+                            className="rounded-2xl shadow-md"
+                        />
+                    </div>
+
                     <section className="grid grid-cols-1 md:grid-cols-2 items-center px-8 py-10 max-w-6xl mx-auto">
                         <div className="space-y-6">
                             <h1 className="text-3xl font-bold leading-snug">
-                                Time to channel your inner detective, Let’s crack this assignment from <br />
-                                from Confusion to{" "}
+                                Time to polish and perfect, <br />
                                 <span className="underline decoration-yellow-400 font-extrabold">
-                                    Clarity!
+                                    Let’s turn rough drafts into Refined Writing!
                                 </span>
                             </h1>
 
                             <p className="text-lg">
-                                Break Down <span className="font-semibold">every part of the assignment</span> and{" "}
-                                <span className="font-semibold">double-check you understand</span> exactly what’s being asked.
+                                Review your draft with <span className="font-semibold">fresh eyes</span> and make changes to <span className="font-semibold">strengthen your writing</span>.
                             </p>
                         </div>
 
                         <div className="flex justify-center md:justify-end">
-                            <Image src="/EditingFrontGraphic.png" alt="EditingFrontGraphic"
-                                width={600}
-                                height={600}
+                            <Image
+                                src="/EditingFrontGraphic.png"
+                                alt="Revision illustration"
+                                width={420}
+                                height={420}
                             />
                         </div>
                     </section>
+
                     <div className="max-w-6xl mx-auto border-2 border-black rounded-sm shadow-md">
                         <div className="border-b-2 border-black bg-gray-100 py-3 text-center">
-                            <h2 className="text-xl font-bold">
-                                Future Checkpoints to look out for
-                            </h2>
+                            <h2 className="text-xl font-bold">Future Checkpoints to look out for</h2>
                         </div>
 
                         <div className="flex">
@@ -77,50 +81,35 @@ const AnalysingPage = () => {
 
                             <div className="flex-1 p-6 space-y-4">
                                 <ul className="list-disc list-inside space-y-3">
-                                    <li>
-                                        I have carefully <span className="font-semibold">read my assignment description</span> and identified the important <span className="font-semibold">verbs and nouns</span>.
-                                    </li>
-                                    <li>
-                                        I understand what <span className="font-semibold">genre or type of writing</span> I am expected to produce.
-                                    </li>
-                                    <li>
-                                        I know who my <span className="font-semibold">audience</span> is and what they need to know to <span className="font-semibold">understand my writing</span>.
-                                    </li>
-                                    <li>
-                                        I can clearly state the <span className="font-semibold">purpose of my assignment</span> and what I am <span className="font-semibold">trying to accomplish</span>.
-                                    </li>
-                                    <li>
-                                        I have reviewed how my assignment will be <span className="font-semibold">graded</span> and know the important <span className="font-semibold">metrics to focus on</span>.
-                                    </li>
-                                    <li>
-                                        I have written down any <span className="font-semibold">questions</span> I still have for my professor so I can get <span className="font-semibold">clarification</span> before I start writing.
-                                    </li>
-                                    <li>
-                                        I feel <span className="font-semibold">confident</span> that I understand what the <span className="font-semibold">assignment</span> is asking me to do.
-                                    </li>
+                                    <li>I have re-read my draft and looked for clarity and organization.</li>
+                                    <li>I have improved areas where my ideas were unclear or weak.</li>
+                                    <li>I have checked that my introduction and conclusion support my message.</li>
+                                    <li>I have made revisions based on feedback (if I got any).</li>
+                                    <li>I have strengthened my writing to better connect with my audience.</li>
+                                    <li>I feel confident my ideas are clear, organized, and easy to follow.</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
+
                     <div className="flex justify-between items-center p-6">
                         <Link
-                            href="/"
+                            href="/AnalysingPage5"
                             className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center"
                         >
-                            Go Back to Previous Section: <br /> Home
+                            Go Back to Previous Section: Drafting
                         </Link>
                         <Link
-                            href="/AnalysingPage2"
+                            href="/RevisionPage2"
                             className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
                         >
-                            Continue to Section 1 of Analysing
+                            Continue to Section 1 of Revision
                         </Link>
                     </div>
-
                 </div>
             </div>
         </div>
     );
 };
 
-export default AnalysingPage;
+export default RevisionPage;

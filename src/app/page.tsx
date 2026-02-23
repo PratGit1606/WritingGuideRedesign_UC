@@ -23,20 +23,6 @@ const WritingGuidePage: React.FC = () => {
   };
   return (
     <div className="relative min-h-screen font-sans text-gray-800 bg-[url(/background.jpeg)] bg-cover bg-center">
-      <header className="flex items-center justify-between px-10 shadow-sm bg-white bg-cover bg-center">
-        <img src="/logo.png" alt="ASU Logo" className="h-20" />
-        <nav className="hidden md:flex gap-8 text-lg">
-          <Link href="/" className="hover:text-yellow-500">Home</Link>
-          <a href="#" className="hover:text-yellow-500">Resources</a>
-          <a href="#" className="hover:text-yellow-500">Tutors</a>
-          <a href="#" className="hover:text-yellow-500">About</a>
-          <a href="#" className="hover:text-yellow-500">Contact</a>
-        </nav>
-        <div className="flex items-center gap-4">
-          <button className="text-black text-lg">Sign in</button>
-          <button onClick={() => setShowPopup(true)} className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800">Get Started</button>
-        </div>
-      </header>
 
       <section className="px-6 sm:px-10 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
@@ -101,7 +87,6 @@ const WritingGuidePage: React.FC = () => {
                   </p>
 
                   <Questionnaire />
-                  {/* Buttons */}
                   <div className="mt-10 flex justify-between">
                     <Link
                       href="/Opening"
@@ -124,7 +109,6 @@ const WritingGuidePage: React.FC = () => {
       </AnimatePresence>
 
       <section className="px-6 md:px-10 py-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        {/* Image with Label Overlay */}
         <div className="relative rounded-2xl overflow-hidden shadow-lg w-full max-w-xl mx-auto transition-transform duration-300 ease-in-out hover:scale-105">
           <img
             src="/GuideHero.jpg" // Replace with actual path
@@ -171,7 +155,6 @@ const WritingGuidePage: React.FC = () => {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 max-w-7xl mx-auto">
-          {/* Citation Generator */}
           <div className="bg-white border border-yellow-400 rounded-[24px] p-6 md:p-8 shadow-md flex flex-col justify-between hover:shadow-lg transition hover:scale-105 transition">
             <div className="flex flex-col gap-3">
               <FaQuoteRight className="text-3xl text-black" />
@@ -185,7 +168,6 @@ const WritingGuidePage: React.FC = () => {
             </button>
           </div>
 
-          {/* Writing Guide */}
           <div className="bg-white border border-yellow-400 rounded-[24px] p-6 md:p-8 shadow-md flex flex-col justify-between hover:shadow-lg transition hover:scale-105 transition">
             <div className="flex flex-col gap-3">
               <FaBookOpen className="text-3xl text-black" />
@@ -199,7 +181,6 @@ const WritingGuidePage: React.FC = () => {
             </Link>
           </div>
 
-          {/* Notebook */}
           <div className="bg-white border border-yellow-400 rounded-[24px] p-6 md:p-8 shadow-md flex flex-col justify-between hover:shadow-lg transition hover:scale-105 transition">
             <div className="flex flex-col gap-3">
               <FaRegStickyNote className="text-3xl text-black" />
@@ -217,13 +198,6 @@ const WritingGuidePage: React.FC = () => {
           </div>
         </div>
       </section>
-
-
-      {/* Footer */}
-      <footer className="bg-yellow-400 py-6 px-10 text-sm text-black text-center">
-        <div className="mb-2">Maps and Locations | Jobs | Directory | Contact ASU | My ASU</div>
-        <div className="text-xs">© 2025 Arizona State University | Privacy | Terms of Use | Emergency | COVID-19 Information</div>
-      </footer>
     </div>
   );
 };

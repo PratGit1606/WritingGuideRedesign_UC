@@ -1,7 +1,4 @@
 "use client";
-
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function NotebookPage() {
@@ -87,27 +84,6 @@ export default function NotebookPage() {
       className="min-h-screen flex flex-col bg-[url(/background.jpeg)] bg-cover bg-center text-black"
       style={{ fontFamily: "Arial, sans-serif" }}
     >
-      <header className="flex items-center justify-between px-10 py-4 shadow-sm bg-white">
-        <Image
-          src="/logo.png"
-          alt="ASU Logo"
-          width={100}
-          height={100}
-          className="h-20 w-auto"
-        />
-        <nav className="hidden md:flex gap-8 text-lg text-black">
-          <Link href="/" className="hover:text-[#FFC627]">Home</Link>
-          <a href="#" className="hover:text-[#FFC627]">Resources</a>
-          <a href="#" className="hover:text-[#FFC627]">Tutors</a>
-          <a href="#" className="hover:text-[#FFC627]">About</a>
-          <a href="#" className="hover:text-[#FFC627]">Contact</a>
-        </nav>
-        <div>
-          <button className="bg-black text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-800">
-            Sign Out
-          </button>
-        </div>
-      </header>
 
       <div className="flex flex-1 p-8 gap-8">
         <aside className="w-1/3 bg-white border rounded-xl shadow-md p-6 space-y-6">
