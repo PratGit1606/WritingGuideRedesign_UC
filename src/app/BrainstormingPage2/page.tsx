@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Sidebar from '../components/Sidebar';
-import ProgressSteps from '../components/AnalysingProgressSteps';
+import ProgressSteps from '../components/ProgressSteps';
 import {
     Search,
 } from "lucide-react";
@@ -35,7 +35,7 @@ const BrainstormingPage2 = () => {
                         <ProgressSteps progress={33} />
                     </div>
                     <div className="py-10">
-                        <Image src="/AnalysingHeader.png" alt="Brainstorming Header"
+                        <Image src="/BrainstormingHeader.png" alt="Brainstorming Header"
                             width={1200}
                             height={400}
                             className="rounded-2xl shadow-md" /></div>

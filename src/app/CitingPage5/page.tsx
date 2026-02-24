@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Sidebar from '../components/Sidebar';
-import ProgressSteps from '../components/AnalysingProgressSteps';
+import ProgressSteps from '../components/ProgressSteps';
 import { Search } from "lucide-react";
 import Link from 'next/link';
 
@@ -85,7 +85,7 @@ const CitingPage5 = () => {
 
           <div className="py-6">
             <Image
-              src="/AnalysingHeader.png"
+              src="/CitingHeader.png"
               alt="Citing Header"
               width={1200}
               height={400}

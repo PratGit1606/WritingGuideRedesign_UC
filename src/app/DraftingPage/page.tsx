@@ -3,7 +3,7 @@ import React from "react";
 import Image from "next/image";
 import Sidebar from "../components/Sidebar";
 import { Search } from "lucide-react";
-import ProgressSteps from "../components/AnalysingProgressSteps";
+import ProgressSteps from '../components/ProgressSteps';
 import Link from "next/link";
 
 const DraftingPage = () => {

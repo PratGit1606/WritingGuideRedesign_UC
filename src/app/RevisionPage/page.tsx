@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Sidebar from '../components/Sidebar';
 import { Search } from "lucide-react";
-import ProgressSteps from '../components/AnalysingProgressSteps';
+import ProgressSteps from '../components/ProgressSteps';
 import Link from 'next/link';
 
 const RevisionPage = () => {
@@ -35,7 +35,7 @@ const RevisionPage = () => {
 
                     <div className="py-10">
                         <Image
-                            src="/AnalysingHeader.png"
+                            src="/RevisionHeader.png"
                             alt="Revision Header — polish and perfect"
                             width={1200}
                             height={400}

@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Sidebar from '../components/Sidebar';
-import ProgressSteps from '../components/AnalysingProgressSteps';
+import ProgressSteps from '../components/ProgressSteps';
 import {
     Search,
 } from "lucide-react";
