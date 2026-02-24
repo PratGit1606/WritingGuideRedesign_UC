@@ -170,7 +170,7 @@ export default function DraftingPage4() {
                             href="/DraftingPage3"
                             className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm"
                         >
-                            Go Back to Previous Section: Drafting Section 2
+                            Go Back to Section 2 of Drafting
                         </Link>
 
                         <Link

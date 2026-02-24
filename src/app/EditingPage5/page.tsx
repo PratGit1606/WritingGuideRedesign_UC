@@ -106,9 +106,11 @@ const EditingPage = () => {
                         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
                             <div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-shrink-0">
                                 <h2 className="text-2xl font-bold mb-4">Checkpoints Achieved!</h2>
-                                <img
+                                <Image
                                     src="/notebook.png"
                                     alt="Notebook Checklist"
+                                    width={224}
+                                    height={224}
                                     className="w-40 sm:w-48 lg:w-56 h-auto"
                                 />
                             </div>
@@ -221,7 +223,7 @@ const EditingPage = () => {
                             href="/EdifingPage4"
                             className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center"
                         >
-                            Go Back to Previous Section: <br /> Section 3 of Editing
+                            Go Back to Section 3 of Editing
                         </a>
                         <a
                             href="/app"

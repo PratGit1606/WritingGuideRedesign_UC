@@ -130,7 +130,7 @@ const EditingPage = () => {
                             href="/EdifingPage2"
                             className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center"
                         >
-                            Go Back to Previous Section: <br /> Section 1 of Editing
+                            Go Back to Section 1 of Editing
                         </a>
                         <a
                             href="/EditingPage4"

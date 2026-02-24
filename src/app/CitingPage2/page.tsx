@@ -133,7 +133,7 @@ const CitingPage2 = () => {
               href="/CitingPage"
               className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center"
             >
-              Go Back to Previous Section: Citing Intro
+              Go Back to Citing Intro
             </Link>
 
             <Link

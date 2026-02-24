@@ -80,7 +80,7 @@ const DraftingPage = () => {
 
             <div className="flex justify-center md:justify-end">
               <Image
-                src="/DraftingGraphic.png"
+                src="/EditingFrontGraphic.png"
                 alt="Drafting illustration"
                 width={420}
                 height={420}

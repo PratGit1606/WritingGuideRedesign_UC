@@ -95,7 +95,7 @@ const BrainstormingPage3 = () => {
                             href="/BrainstormingPage2"
                             className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center"
                         >
-                            Go Back to Previous Section
+                            Go Back to Section 2 of Brainstorming
                         </a>
                         <a
                             href="/BrainstormingPage4"

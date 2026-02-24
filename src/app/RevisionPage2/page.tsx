@@ -126,7 +126,7 @@ const RevisionPage2 = () => {
 
           <div className="flex justify-between items-center p-6">
             <Link href="/RevisionPage" className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center">
-              Go Back to Previous Section: Revision Intro
+              Go Back to Intro of Revision
             </Link>
 
             <Link href="/RevisionPage3" className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center">

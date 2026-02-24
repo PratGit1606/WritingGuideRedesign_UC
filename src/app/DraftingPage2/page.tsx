@@ -159,11 +159,7 @@ export default function DraftingPage2() {
                       </div>
                     </div>
 
-                    <div className="flex justify-center md:justify-end md:items-start">
-                      <div className="w-full md:w-48 lg:w-56">
-                        <Image src="/coffee-pot.png" alt="Coffee pouring" width={220} height={220} className="object-contain" />
-                      </div>
-                    </div>
+                   
                   </div>
                 </div>
 
@@ -173,7 +169,7 @@ export default function DraftingPage2() {
                     href="/DraftingPage"
                     className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm"
                   >
-                    Go Back to Previous Section: Drafting Intro
+                    Go Back to Intro of Drafting
                   </Link>
 
                   <Link

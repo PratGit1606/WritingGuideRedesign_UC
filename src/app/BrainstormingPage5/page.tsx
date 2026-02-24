@@ -202,16 +202,15 @@ const BrainstormingPage5 = () => {
                         </div>
                     </div>
 
-                    {/* Navigation */}
                     <div className="flex justify-between items-center p-6">
                         <Link
                             href="/BrainstormingPage4"
                             className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center"
                         >
-                            Go Back to Previous Section
+                            Go Back to Section 3 of Brainstorming
                         </Link>
                         <Link
-                            href="/app"
+                            href="/ResearchingPage"
                             className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
                         >
                             Continue to Researching

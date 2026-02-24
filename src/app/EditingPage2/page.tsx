@@ -98,7 +98,7 @@ const EditingPage = () => {
                             href="/EditingPage"
                             className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center"
                         >
-                            Go Back to Previous Section: <br /> Section 1 of Editing
+                            Go Back to Intro of Editing
                         </a>
                         <a
                             href="/EditingPage3"
