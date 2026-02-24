@@ -59,9 +59,11 @@ const EditingPage = () => {
                             </p>
 
                             <div className="flex justify-center my-8">
-                                <img
+                                <Image
                                     src="/AnalysingDoc2.png"
                                     alt="Writing Situation Triangle"
+                                    width={400}
+                                    height={300}
                                     className="max-w-xs md:max-w-sm lg:max-w-md"
                                 />
                             </div>

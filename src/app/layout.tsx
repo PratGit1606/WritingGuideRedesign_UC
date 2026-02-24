@@ -20,19 +20,15 @@ export const metadata: Metadata = {
   description: "ASN Writing Guide Redesign MVP",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <Header />
 
-        <main className="min-h-screen mt-20">
+        <main className="flex-grow bg-[url(/background.jpeg)] bg-cover bg-center pt-20 pb-20">
           {children}
         </main>
 

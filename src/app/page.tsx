@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FaQuoteRight, FaBookOpen, FaRegStickyNote } from 'react-icons/fa';
 import Link from 'next/link';
+import Image from 'next/image';
 import NotebookBlock from './components/Notebook';
 import { useRouter } from 'next/navigation';
 import Questionnaire from './components/Questionnaire';
@@ -110,9 +111,11 @@ const WritingGuidePage: React.FC = () => {
 
       <section className="px-6 md:px-10 py-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         <div className="relative rounded-2xl overflow-hidden shadow-lg w-full max-w-xl mx-auto transition-transform duration-300 ease-in-out hover:scale-105">
-          <img
-            src="/GuideHero.jpg" // Replace with actual path
+          <Image
+            src="/GuideHero.jpg"
             alt="Writing Center"
+            width={500}
+            height={300}
             className="w-full h-auto object-cover"
           />
           <div className="absolute bottom-5 left-5 bg-yellow-400 text-black text-xl font-bold px-4 py-2 rounded-sm shadow-md">

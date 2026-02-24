@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import cn from "clsx";
 
 const Header: React.FC = () => {
@@ -29,8 +30,8 @@ const Header: React.FC = () => {
         >
             <div className="mx-auto max-w-7xl px-6 md:px-10 h-20 flex items-center justify-between">
                 <div className="flex items-center gap-6">
-                    <Link href="/" aria-label="Home">
-                        <img src="/logo.png" alt="ASU Logo" className="h-14 md:h-20" />
+                    <Link href="https://www.asu.edu/" aria-label="Home" target="_blank">
+                        <Image src="/logo.png" alt="ASU Logo" width={80} height={80} className="h-14 md:h-20" />
                     </Link>
 
                     <nav className="hidden md:flex gap-8 text-lg" aria-label="Main navigation">
