@@ -40,7 +40,7 @@ const EditingPage = () => {
                             width={1200}
                             height={400}
                             className="rounded-2xl shadow-md" /></div>
-                    <Tabs overviewContent={
+                    <Tabs pageId="EditingPage2" overviewContent={
                         <div className="py-4">
                             <div className="flex items-center shadow-md mb-6">
                                 <div className="w-5 bg-[#FFC627] self-stretch"></div>

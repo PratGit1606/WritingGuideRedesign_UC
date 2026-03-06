@@ -5,8 +5,7 @@ import ProgressSteps from '../components/ProgressSteps';
 import {
     Search,
 } from "lucide-react";
-import Tabs from '../components/AnalysingTabs';
-
+import TabWithChecklist from '../components/Tabs';
 const EditingPage = () => {
     return (
         <div className="relative min-h-screen font-sans text-gray-800 bg-[url(/background.jpeg)] bg-cover bg-center">
@@ -39,7 +38,7 @@ const EditingPage = () => {
                             width={1200}
                             height={400}
                             className="rounded-2xl shadow-md" /></div>
-                    <Tabs overviewContent={
+                    <TabWithChecklist pageId="AnalysingPage3" overviewContent={
                         <div className="py-4">
                             <div className="flex items-center shadow-md mb-6">
                                 <div className="w-5 bg-[#FFC627] self-stretch"></div>

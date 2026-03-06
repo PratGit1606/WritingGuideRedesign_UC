@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Sidebar from '../components/Sidebar';
 import ProgressSteps from '../components/ProgressSteps';
 import { Search } from "lucide-react";
-import Tabs from '../components/AnalysingTabs';
+import TabWithChecklist from '../components/Tabs';
 
 const CitingPage3 = () => {
   return (
@@ -43,7 +43,7 @@ const CitingPage3 = () => {
             />
           </div>
 
-          <Tabs
+          <TabWithChecklist pageId="CitingPage3"
             overviewContent={
               <div className="py-4">
                 <div className="flex items-center shadow-md mb-6">

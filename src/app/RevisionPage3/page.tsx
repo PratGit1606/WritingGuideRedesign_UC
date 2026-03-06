@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Sidebar from '../components/Sidebar';
 import { Search } from "lucide-react";
 import ProgressSteps from '../components/ProgressSteps';
-import Tabs from '../components/AnalysingTabs';
+import Tabs from '../components/Tabs';
 import Link from 'next/link';
 
 const RevisionPage3 = () => {
@@ -40,7 +40,7 @@ const RevisionPage3 = () => {
             <Image src="/RevisionHeader.png" alt="Revision Header — voice & synthesis" width={1200} height={400} className="rounded-2xl shadow-md" />
           </div>
 
-          <Tabs overviewContent={
+          <Tabs pageId="RevisionPage3" overviewContent={
             <div className="py-4">
               <div className="flex items-center shadow-md mb-6">
                 <div className="w-5 bg-[#FFC627] self-stretch"></div>

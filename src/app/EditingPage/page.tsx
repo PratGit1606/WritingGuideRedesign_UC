@@ -123,7 +123,7 @@ const EditingPage = () => {
           </div>
           <div className="flex justify-between items-center p-6">
             <a
-              href="/revision"
+              href="/RevisionPage5"
               className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center"
             >
               Go Back to Previous Section: <br /> Revision

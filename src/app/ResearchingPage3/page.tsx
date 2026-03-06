@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Sidebar from '../components/Sidebar';
 import { Search } from "lucide-react";
 import ProgressSteps from '../components/ProgressSteps';
-import Tabs from '../components/AnalysingTabs';
+import Tabs from '../components/Tabs';
 import Link from 'next/link';
 
 const ResearchingPage3 = () => {
@@ -39,7 +39,7 @@ const ResearchingPage3 = () => {
             <Image src="/ResearchingHeader.png" alt="Researching Header" width={1200} height={400} className="rounded-2xl shadow-md" />
           </div>
 
-          <Tabs overviewContent={
+          <Tabs pageId="ResearchingPage3" overviewContent={
             <div className="py-4">
               <div className="flex items-center shadow-md mb-6">
                 <div className="w-5 bg-[#FFC627] self-stretch"></div>

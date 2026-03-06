@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Sidebar from '../components/Sidebar';
 import { Search } from "lucide-react";
 import ProgressSteps from '../components/ProgressSteps';
-import Tabs from '../components/AnalysingTabs';
+import TabWithChecklist from '../components/Tabs';
 import Link from 'next/link';
 
 const CitingPage2 = () => {
@@ -41,7 +41,7 @@ const CitingPage2 = () => {
             <Image src="/CitingHeader.png" alt="Citing header" width={1200} height={360} className="rounded-2xl shadow-md object-cover" />
           </div>
 
-          <Tabs overviewContent={
+          <TabWithChecklist pageId="CitingPage2" overviewContent={
             <div className="py-4">
               <div className="flex items-center shadow-md mb-6">
                 <div className="w-5 bg-[#FFC627] self-stretch"></div>

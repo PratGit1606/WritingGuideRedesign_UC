@@ -94,7 +94,7 @@ const RevisionPage = () => {
 
                     <div className="flex justify-between items-center p-6">
                         <Link
-                            href="/AnalysingPage5"
+                            href="/DraftingPage5"
                             className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center"
                         >
                             Go Back to Previous Section: Drafting

@@ -226,7 +226,7 @@ const EditingPage = () => {
                             Go Back to Section 3 of Editing
                         </a>
                         <a
-                            href="/app"
+                            href="/CitingPage"
                             className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
                         >
                             Continue to Citation

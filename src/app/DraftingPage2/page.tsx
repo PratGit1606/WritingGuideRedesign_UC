@@ -5,7 +5,7 @@ import Image from "next/image";
 import Sidebar from "../components/Sidebar";
 import { Search } from "lucide-react";
 import ProgressSteps from '../components/ProgressSteps';
-import Tabs from "../components/AnalysingTabs";
+import TabWithChecklist from "../components/Tabs";
 import Link from "next/link";
 
 export default function DraftingPage2() {
@@ -48,7 +48,7 @@ export default function DraftingPage2() {
             />
           </div>
 
-          <Tabs
+          <TabWithChecklist pageId="DraftingPage2"
             overviewContent={
               <div className="py-4">
                 <div className="flex items-center shadow-md mb-6">
