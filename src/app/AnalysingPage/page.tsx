@@ -43,7 +43,7 @@ const AnalysingPage = () => {
                             <h1 className="text-3xl font-bold leading-snug">
                                 Time to channel your inner detective, Let’s crack this assignment from <br />
                                 from Confusion to{" "}
-                                <span className="underline decoration-yellow-400 font-extrabold">
+                                <span className="underline decoration-asu-gold font-extrabold">
                                     Clarity!
                                 </span>
                             </h1>
@@ -111,7 +111,7 @@ const AnalysingPage = () => {
                         </Link>
                         <Link
                             href="/AnalysingPage2"
-                            className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
+                            className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md text-center"
                         >
                             Continue to Section 1 of Analysing
                         </Link>

@@ -38,14 +38,14 @@ export default function NotebookBlock() {
         placeholder="Your Title Here"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="w-full border border-black rounded-full px-4 py-3 mb-6 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+        className="w-full border border-black rounded-full px-4 py-3 mb-6 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-asu-gold"
       />
 
       <textarea
         placeholder="Your Text Here"
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="w-full border border-black rounded-[20px] p-4 h-36 text-gray-800 placeholder:italic placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6 resize-none"
+        className="w-full border border-black rounded-[20px] p-4 h-36 text-gray-800 placeholder:italic placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-asu-gold mb-6 resize-none"
       />
 
       <div className="text-right">
@@ -53,7 +53,7 @@ export default function NotebookBlock() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleSave}
-          className="bg-yellow-400 px-6 py-2 rounded-full border border-black font-semibold text-black shadow-sm"
+          className="bg-asu-gold px-6 py-2 rounded-full border border-asu-black font-semibold text-asu-black shadow-sm"
         >
           Save
         </motion.button>

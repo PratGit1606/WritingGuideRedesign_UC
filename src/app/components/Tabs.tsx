@@ -196,7 +196,7 @@ export default function TabWithChecklist({
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`flex-1 py-3 text-center font-semibold transition ${activeTab === tab.id
-                                ? "bg-[#FFC627] text-black"
+                                ? "bg-asu-gold text-black"
                                 : "hover:bg-gray-300 text-black"
                                 }`}
                         >

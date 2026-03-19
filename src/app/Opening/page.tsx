@@ -44,7 +44,7 @@ const steps = [
     label: "Editing",
     desc: "Checking my grammar and word choice",
     icon: <Edit size={20} />,
-    color: "bg-[#FFC627]",
+    color: "bg-asu-gold",
   },
   {
     id: 7,
@@ -58,9 +58,9 @@ const steps = [
 export default function Page() {
   return (
     <div className="min-h-screen bg-[url(/background.jpeg)] bg-cover bg-center font-sans text-black">
-      <div className="bg-white mt-6 rounded-xl border-2 border-[#FFC627] text-center max-w-3xl py-10 mx-auto">
+      <div className="bg-white mt-6 rounded-xl border-2 border-asu-gold text-center max-w-3xl py-10 mx-auto">
         <h1 className="text-[60px] font-bold">
-          Writing <span className="text-[#FFC627]">Guide</span>
+          Writing <span className="text-asu-gold">Guide</span>
         </h1>
         <h2 className="text-[30px] mt-2 font-medium">
           Your Reference Guide for Writing Assignments

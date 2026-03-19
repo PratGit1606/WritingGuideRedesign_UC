@@ -46,7 +46,7 @@ const ResearchingPage = () => {
                     <section className="grid grid-cols-1 md:grid-cols-2 items-center px-8 py-10 max-w-6xl mx-auto">
                         <div className="space-y-6">
                             <h1 className="text-3xl font-bold leading-snug">
-                                Time to put on your researcher’s cap — let’s dig up facts and <span className="underline decoration-yellow-400 font-extrabold">
+                                Time to put on your researcher’s cap — let’s dig up facts and <span className="underline decoration-asu-gold font-extrabold">
                                     fuel your writing!
                                 </span>
                             </h1>
@@ -100,7 +100,7 @@ const ResearchingPage = () => {
                         </Link>
                         <Link
                             href="/ResearchingPage2"
-                            className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
+                            className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md text-center"
                         >
                             Continue to Section 1 of Researching
                         </Link>

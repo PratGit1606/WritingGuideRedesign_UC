@@ -88,7 +88,7 @@ export default function NotebookPage() {
       <div className="flex flex-1 p-8 gap-8">
         <aside className="w-1/3 bg-white border rounded-xl shadow-md p-6 space-y-6">
           <h2 className="text-3xl font-bold">
-            My <span style={{ color: "#FFC627" }}>Notebook</span>
+            My <span className="text-asu-gold">Notebook</span>
           </h2>
           <div className="space-y-4">
             {notes.map((note) => (
@@ -96,7 +96,7 @@ export default function NotebookPage() {
                 key={note.id}
                 onClick={() => setActiveNoteId(note.id)}
                 className={`p-4 rounded-xl shadow-sm border cursor-pointer transition ${note.id === activeNoteId
-                  ? "bg-[#FFC627] text-black"
+                  ? "bg-asu-gold text-black"
                   : "bg-white hover:bg-gray-100"
                   }`}
               >
@@ -117,7 +117,7 @@ export default function NotebookPage() {
             <h2 className="text-[25px] font-bold">Writer’s Section</h2>
             <button
               onClick={handleNewNote}
-              className="bg-[#FFC627] px-4 py-2 rounded-full border border-black font-semibold hover:bg-yellow-500 text-black"
+              className="bg-asu-gold px-4 py-2 rounded-full border border-asu-black font-semibold hover:bg-asu-gold/90 text-asu-black"
             >
               + New Note
             </button>
@@ -151,7 +151,7 @@ export default function NotebookPage() {
                 </button>
                 <button
                   onClick={handleSave}
-                  className="bg-[#FFC627] px-6 py-2 rounded-full border border-black font-semibold hover:bg-yellow-500 text-black"
+                  className="bg-asu-gold px-6 py-2 rounded-full border border-asu-black font-semibold hover:bg-asu-gold/90 text-asu-black"
                 >
                   Save
                 </button>
@@ -164,7 +164,7 @@ export default function NotebookPage() {
         </section>
       </div>
 
-      <footer className="bg-[#FFC627] text-black py-4 text-sm border-t">
+      <footer className="bg-asu-gold text-black py-4 text-sm border-t">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <div className="flex gap-6">
             <a href="#">Maps and Locations</a>

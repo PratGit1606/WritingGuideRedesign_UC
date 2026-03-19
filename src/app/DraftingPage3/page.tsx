@@ -83,7 +83,7 @@ export default function DraftingPage3() {
             overviewContent={
               <div className="py-4">
                 <div className="flex items-center shadow-md mb-6">
-                  <div className="w-5 bg-[#FFC627] self-stretch"></div>
+                  <div className="w-5 bg-asu-gold self-stretch"></div>
                   <div className="px-4 py-3 bg-white w-full">
                     <h2 className="text-xl font-bold text-gray-900">Section 2</h2>
                   </div>
@@ -100,7 +100,7 @@ export default function DraftingPage3() {
                 </p>
 
                 <div className="mb-6">
-                  <h3 className="font-semibold bg-[#FFC627] inline-block px-2 py-1 mb-3">Here’s what we mean by summary and synthesis:</h3>
+                  <h3 className="font-semibold bg-asu-gold inline-block px-2 py-1 mb-3">Here’s what we mean by summary and synthesis:</h3>
 
                   <div className="hidden md:block border rounded">
                     <table className="w-full text-left">
@@ -176,7 +176,7 @@ export default function DraftingPage3() {
                 </ul>
 
                 <div className="mb-6">
-                  <h4 className="font-semibold inline-block bg-[#FFC627] px-2 py-1">Let’s practice building an outline below!</h4>
+                  <h4 className="font-semibold inline-block bg-asu-gold px-2 py-1">Let’s practice building an outline below!</h4>
                 </div>
 
                 <div className="border rounded p-4">
@@ -241,7 +241,7 @@ export default function DraftingPage3() {
 
                   <Link
                     href="/DraftingPage4"
-                    className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md"
+                    className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md"
                   >
                     Continue to Section 3 of Drafting
                   </Link>

@@ -42,7 +42,7 @@ const ResearchingPage3 = () => {
           <Tabs pageId="ResearchingPage3" overviewContent={
             <div className="py-4">
               <div className="flex items-center shadow-md mb-6">
-                <div className="w-5 bg-[#FFC627] self-stretch"></div>
+                <div className="w-5 bg-asu-gold self-stretch"></div>
                 <div className="px-4 py-3 bg-white w-full">
                   <h2 className="text-xl font-bold text-gray-900">Section 2</h2>
                 </div>
@@ -60,14 +60,14 @@ const ResearchingPage3 = () => {
 
               <div className="space-y-6">
                 <div>
-                  <h3 className="bg-[#FFC627] inline-block px-2 py-1 font-bold">Read Critically:</h3>
+                  <h3 className="bg-asu-gold inline-block px-2 py-1 font-bold">Read Critically:</h3>
                   <p className="mt-3 text-gray-800">
                     Reading critically means going beyond absorbing information and actually having a conversation with what you read. Notice and keep track of your own reactions to what you read — critical reading prioritizes reflection on what a text makes you think and how it makes you feel. This includes checking for rhetorical clarity and understanding.
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="bg-[#FFC627] inline-block px-2 py-1 font-bold">Read for Understanding:</h3>
+                  <h3 className="bg-asu-gold inline-block px-2 py-1 font-bold">Read for Understanding:</h3>
                   <p className="mt-3 text-gray-800">
                     Read to understand what the author is saying. Keep these questions in mind and document answers in your notes:
                   </p>
@@ -81,7 +81,7 @@ const ResearchingPage3 = () => {
                 </div>
 
                 <div>
-                  <h3 className="bg-[#FFC627] inline-block px-2 py-1 font-bold">Read Rhetorically:</h3>
+                  <h3 className="bg-asu-gold inline-block px-2 py-1 font-bold">Read Rhetorically:</h3>
                   <p className="mt-3 text-gray-800">
                     Reading rhetorically means evaluating how effectively the author achieves their purpose and builds an argument. Keep these questions in mind:
                   </p>
@@ -155,7 +155,7 @@ const ResearchingPage3 = () => {
             <Link href="/ResearchingPage2" className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center">
               Go Back to Section 2 of Researching
             </Link>
-            <Link href="/ResearchingPage4" className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center">
+            <Link href="/ResearchingPage4" className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md text-center">
               Continue to Section 3 of Researching
             </Link>
           </div>

@@ -1,11 +1,24 @@
 @import "tailwindcss";
 
+/* ASU brand — Writing Guide */
 :root {
+  --asu-maroon: #8c1d40;
+  --asu-gold: #ffc627;
+  --asu-black: #000000;
+  --asu-white: #ffffff;
+  --asu-blue: #00a3e0;
+  --asu-gray: #747474;
   --background: #ffffff;
   --foreground: #171717;
 }
 
 @theme inline {
+  --color-asu-maroon: #8c1d40;
+  --color-asu-gold: #ffc627;
+  --color-asu-black: #000000;
+  --color-asu-white: #ffffff;
+  --color-asu-blue: #00a3e0;
+  --color-asu-gray: #747474;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);

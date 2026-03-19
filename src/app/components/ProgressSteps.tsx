@@ -73,7 +73,7 @@ export default function ProgressSteps(_: { progress?: number } = {}) {
               <div
                 className="relative flex items-center justify-center w-16 h-16 rounded-full"
                 style={{
-                  background: `conic-gradient(#FFC627 ${computedProgress}%, #e5e5e5 ${computedProgress}%)`,
+                  background: `conic-gradient(var(--asu-gold) ${computedProgress}%, #e5e5e5 ${computedProgress}%)`,
                 }}
               >
                 <div className="absolute w-12 h-12 bg-white rounded-full flex items-center justify-center">
@@ -86,7 +86,7 @@ export default function ProgressSteps(_: { progress?: number } = {}) {
               <div
                 className={`
                   flex items-center justify-center w-16 h-16 rounded-full border-4
-                  ${status === "done" ? "bg-black border-black text-white" : ""}
+                  ${status === "done" ? "bg-asu-black border-asu-black text-asu-white" : ""}
                   ${status === "upcoming" ? "bg-gray-300 border-gray-300 text-gray-500" : ""}
                 `}
               >

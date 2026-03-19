@@ -44,7 +44,7 @@ const EditingPage = () => {
                 Time to put on your Editor’s hat, <br />
                 Let’s turn those drafts <br />
                 from Meh to{" "}
-                <span className="underline decoration-yellow-400 font-extrabold">
+                <span className="underline decoration-asu-gold font-extrabold">
                   Magnificent!
                 </span>
               </h1>
@@ -130,7 +130,7 @@ const EditingPage = () => {
             </a>
             <a
               href="/EditingPage2"
-              className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
+              className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md text-center"
             >
               Continue to Section 1 of Editing
             </a>

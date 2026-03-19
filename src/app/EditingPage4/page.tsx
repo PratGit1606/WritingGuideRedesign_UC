@@ -40,7 +40,7 @@ const EditingPage = () => {
                     <Tabs pageId="EditingPage4" overviewContent={
                         <div className="py-4">
                             <div className="flex items-center shadow-md mb-6">
-                                <div className="w-5 bg-[#FFC627] self-stretch"></div>
+                                <div className="w-5 bg-asu-gold self-stretch"></div>
                                 <div className="px-4 py-3 bg-white w-full">
                                     <h2 className="text-xl font-bold text-gray-900">Section 3</h2>
                                 </div>
@@ -88,7 +88,7 @@ const EditingPage = () => {
                             </h2>
 
                             <div className="mb-6">
-                                <h3 className="text-[18px] font-bold mb-2 bg-[#FFC627] inline-block px-2">
+                                <h3 className="text-[18px] font-bold mb-2 bg-asu-gold inline-block px-2">
                                     Check for correct word choice
                                 </h3>
                                 <p className="text-[18px] text-gray-800 leading-relaxed">
@@ -100,7 +100,7 @@ const EditingPage = () => {
                             </div>
 
                             <div className="mb-6">
-                                <h3 className="text-[18px] font-bold mb-2 bg-[#FFC627] inline-block px-2">
+                                <h3 className="text-[18px] font-bold mb-2 bg-asu-gold inline-block px-2">
                                     Consider the tone you need to have for the paper
                                 </h3>
                                 <p className="text-[18px] text-gray-800 leading-relaxed">
@@ -111,7 +111,7 @@ const EditingPage = () => {
                             </div>
 
                             <div className="mb-6">
-                                <h3 className="text-[18px] font-bold mb-2 bg-[#FFC627] inline-block px-2">
+                                <h3 className="text-[18px] font-bold mb-2 bg-asu-gold inline-block px-2">
                                     How Word Choice Impacts Tone
                                 </h3>
                                 <p className="text-[18px] text-gray-800 leading-relaxed">
@@ -133,7 +133,7 @@ const EditingPage = () => {
                         </a>
                         <a
                             href="/EditingPage5"
-                            className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
+                            className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md text-center"
                         >
                             Continue to Outro  of Editing
                         </a>

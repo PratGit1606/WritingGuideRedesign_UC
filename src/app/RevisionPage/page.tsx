@@ -47,7 +47,7 @@ const RevisionPage = () => {
                         <div className="space-y-6">
                             <h1 className="text-3xl font-bold leading-snug">
                                 Time to polish and perfect, <br />
-                                <span className="underline decoration-yellow-400 font-extrabold">
+                                <span className="underline decoration-asu-gold font-extrabold">
                                     Let’s turn rough drafts into Refined Writing!
                                 </span>
                             </h1>
@@ -101,7 +101,7 @@ const RevisionPage = () => {
                         </Link>
                         <Link
                             href="/RevisionPage2"
-                            className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
+                            className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md text-center"
                         >
                             Continue to Section 1 of Revision
                         </Link>

@@ -42,7 +42,7 @@ const RevisionPage2 = () => {
           <Tabs pageId="RevisionPage2" overviewContent={
             <div className="py-4">
               <div className="flex items-center shadow-md mb-6">
-                <div className="w-5 bg-[#FFC627] self-stretch"></div>
+                <div className="w-5 bg-asu-gold self-stretch"></div>
                 <div className="px-4 py-3 bg-white w-full">
                   <h2 className="text-xl font-bold text-gray-900">Section 2</h2>
                 </div>
@@ -129,7 +129,7 @@ const RevisionPage2 = () => {
               Go Back to Intro of Revision
             </Link>
 
-            <Link href="/RevisionPage3" className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center">
+            <Link href="/RevisionPage3" className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md text-center">
               Continue to Section 2 of Revision
             </Link>
           </div>

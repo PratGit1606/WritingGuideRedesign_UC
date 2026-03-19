@@ -46,7 +46,7 @@ export default function Questionnaire() {
           key={q.id}
           layout
           className={`rounded-xl p-5 border-2 cursor-pointer transition 
-            ${activeQuestion === q.id ? "bg-yellow-50 border-yellow-400" : "bg-gray-100 border-gray-300"}`}
+            ${activeQuestion === q.id ? "bg-asu-gold/10 border-asu-gold" : "bg-gray-100 border-gray-300"}`}
           onClick={() => handleMainClick(q.id)}
         >
           <p className="font-semibold text-gray-800">{q.main}</p>
@@ -64,8 +64,8 @@ export default function Questionnaire() {
                     key={index}
                     className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition
                       ${answers[q.id] === index
-                        ? "bg-yellow-400 text-black border-yellow-600"
-                        : "bg-white border-gray-300 hover:bg-yellow-100"}`}
+                        ? "bg-asu-gold text-asu-black border-asu-maroon/40"
+                        : "bg-white border-gray-300 hover:bg-asu-gold/15"}`}
                     onClick={(e) => {
                       e.stopPropagation(); // don’t collapse
                       handleSubClick(q.id, index);
@@ -76,7 +76,7 @@ export default function Questionnaire() {
                       name={`q-${q.id}`}
                       checked={answers[q.id] === index}
                       readOnly
-                      className="accent-yellow-500"
+                      className="accent-asu-maroon"
                     />
                     <span className="text-sm">{option}</span>
                   </label>

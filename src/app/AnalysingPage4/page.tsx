@@ -41,7 +41,7 @@ const EditingPage = () => {
                     <TabWithChecklist pageId="AnalysingPage4" overviewContent={
                         <div className="py-4">
                             <div className="flex items-center shadow-md mb-6">
-                                <div className="w-5 bg-[#FFC627] self-stretch"></div>
+                                <div className="w-5 bg-asu-gold self-stretch"></div>
                                 <div className="px-4 py-3 bg-white w-full">
                                     <h2 className="text-xl font-bold text-gray-900">Section 3</h2>
                                 </div>
@@ -112,7 +112,7 @@ const EditingPage = () => {
                                         </p>
                                         <textarea
                                             placeholder={item.placeholder}
-                                            className="w-full border border-gray-300 rounded-lg p-3 text-[16px] focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                                            className="w-full border border-gray-300 rounded-lg p-3 text-[16px] focus:outline-none focus:ring-2 focus:ring-asu-gold"
                                             rows={3}
                                         />
                                     </div>
@@ -130,7 +130,7 @@ const EditingPage = () => {
                         </a>
                         <a
                             href="/AnalysingPage5"
-                            className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
+                            className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md text-center"
                         >
                             Continue to Finale of Analysing
                         </a>
