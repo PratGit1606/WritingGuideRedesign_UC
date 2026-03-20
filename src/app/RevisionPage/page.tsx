@@ -100,7 +100,7 @@ const RevisionPage = () => {
                             Go Back to Previous Section: Drafting
                         </Link>
                         <Link
-                            href="/RevisionPage2"
+                            href="/RevisionPage2"   
                             className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
                         >
                             Continue to Section 1 of Revision
