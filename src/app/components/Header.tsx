@@ -39,13 +39,13 @@ const Header: React.FC = () => {
                         <a href="#" className="hover:text-asu-maroon transition-colors">Resources</a>
                         <a href="#" className="hover:text-asu-maroon transition-colors">Tutors</a>
                         <a href="#" className="hover:text-asu-maroon transition-colors">About</a>
-                        <a href="#" className="hover:text-asu-maroon transition-colors">Contact</a>
+                        <Link href="/#contact" className="hover:text-asu-maroon transition-colors">Contact</Link>
                     </nav>
                 </div>
 
                 <div className="flex items-center gap-4">
                     <button type="button" className="text-asu-black text-lg hover:text-asu-maroon transition-colors">Sign in</button>
-                    <Link href="/" className="bg-asu-maroon text-asu-white px-4 py-2 rounded-full hover:bg-asu-maroon/90 text-base font-medium">Get Started</Link>
+                    <Link href="/" className="bg-asu-black  text-asu-white px-4 py-2 rounded-full hover:bg-asu-maroon/90 text-base font-medium">Open notebook</Link>
                 </div>
             </div>
         </header>

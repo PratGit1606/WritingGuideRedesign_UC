@@ -5,8 +5,16 @@ import { usePathname } from "next/navigation";
 import React from "react";
 
 
-export default function ProgressSteps(_: { progress?: number } = {}) {
-  const pathname = usePathname() || "";
+export default function ProgressSteps({
+  progress: _progress,
+  simulatedPath,
+}: {
+  progress?: number;
+  /** When embedded in Notebook, pretend we are at this path for step/progress UI */
+  simulatedPath?: string;
+} = {}) {
+  const pathnameFromHook = usePathname() || "";
+  const pathname = simulatedPath ?? pathnameFromHook;
   const path = pathname.split("/").filter(Boolean).pop() || "";
 
   const steps = [

@@ -5,23 +5,13 @@ import { FaQuoteRight, FaBookOpen, FaRegStickyNote } from 'react-icons/fa';
 import Link from 'next/link';
 import Image from 'next/image';
 import LandingDesktopMock from './components/LandingDesktopMock';
-import { useRouter } from 'next/navigation';
-import Questionnaire from './components/Questionnaire';
+import EmotionRecommendationModal from './components/EmotionRecommendationModal';
+import ContactSection from './components/ContactSection';
 
 
 const WritingGuidePage: React.FC = () => {
 
   const [showPopup, setShowPopup] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  const handleSubmit = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      router.push('/Opening');
-    }, 4000);
-  };
   return (
     <div className="relative min-h-screen font-sans text-asu-gray bg-[url(/background.jpeg)] bg-cover bg-center">
 
@@ -29,24 +19,32 @@ const WritingGuidePage: React.FC = () => {
         <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
 
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, ease: 'easeOut' }}
+            transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
             className="flex flex-col items-center w-full"
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-asu-black">
+            <motion.span
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
+              className="hero-metal-tag-wrap mb-4 md:mb-5"
+            >
+              <span className="hero-metal-tag">ASU Writing Guide</span>
+            </motion.span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-asu-black" style={{ color: '#000' }}>
               Write with confidence,
               <br />
-              from idea to <span className="text-asu-gold">final draft</span>.
+              from idea to <span className="text-asu-gold" style={{ color: '#FFC627' }}>final draft</span>.
             </h1>
-            <p className="mt-6 text-lg text-asu-gray max-w-xl mx-auto">
+            <p className="mt-5 text-lg max-w-xl mx-auto text-asu-gray" style={{ color: '#747474' }}>
               Personalized writing assistance for ASU students. Interactive tools, expert tutoring, and resources to help you excel.
             </p>
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
               onClick={() => setShowPopup(true)}
-              className="mt-8 bg-asu-maroon text-asu-white px-8 py-3 rounded-full text-lg shadow-md transition hover:bg-asu-maroon/90"
+              className="mt-5 z-50 bg-asu-black text-asu-white px-8 py-2 rounded-full text-lg shadow-md transition-colors duration-200 hover:bg-asu-black/85"
             >
               Get Started
             </motion.button>
@@ -56,61 +54,15 @@ const WritingGuidePage: React.FC = () => {
         </div>
       </section>
 
-      <AnimatePresence>
-        {showPopup && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[url(/background.jpeg)] bg-cover bg-center bg-opacity-60"
-            onClick={() => setShowPopup(false)} 
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="bg-asu-white max-w-2xl w-full mx-4 rounded-2xl shadow-xl p-8 relative"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {loading ? (
-                <div className="flex flex-col items-center justify-center py-20">
-                  <div className="w-12 h-12 border-4 border-asu-gold border-t-transparent rounded-full animate-spin mb-6"></div>
-                  <p className="text-lg font-semibold text-asu-gray">Sorting your path...</p>
-                </div>
-              ) : (
-                <>
-                  <h2 className="text-3xl font-bold text-center text-asu-black mb-6">
-                    The Quest Begins ✨
-                  </h2>
-                  <p className="text-center text-asu-gray mb-8">
-                    Choose one path at a time to guide your writing journey.
-                  </p>
+      <EmotionRecommendationModal
+        open={showPopup}
+        onClose={() => setShowPopup(false)}
+        mode="landing"
+      />
 
-                  <Questionnaire />
-                  <div className="mt-10 flex justify-between">
-                    <Link
-                      href="/Opening"
-                      className="px-6 py-2 rounded-full border border-asu-gray/40 text-asu-gray hover:bg-asu-gray/10 transition"
-                    >
-                      Skip
-                    </Link>
-                    <button
-                      onClick={handleSubmit}
-                      className="px-6 py-2 bg-asu-gold text-asu-black font-semibold rounded-full shadow hover:bg-asu-gold/90 transition"
-                    >
-                      Submit
-                    </button>
-                  </div>
-                </>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <section className="px-6 md:px-10 py-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        <div className="relative rounded-2xl overflow-hidden shadow-lg w-full max-w-xl mx-auto transition-transform duration-300 ease-in-out hover:scale-105">
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-6 md:px-10 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div className="relative rounded-2xl overflow-hidden shadow-lg w-full max-w-xl mx-auto transition-opacity duration-200 hover:opacity-95">
           <Image
             src="/GuideHero.jpg"
             alt="Writing Center"
@@ -149,58 +101,66 @@ const WritingGuidePage: React.FC = () => {
             ))}
           </ul>
         </div>
+        </div>
       </section>
 
 
-      <section className="px-6 md:px-10 py-20">
-        <h2 className="text-center text-4xl font-bold text-asu-black mb-12">
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-6 md:px-10">
+        <h2 className="text-center text-3xl font-semibold text-asu-black mb-14">
           Our <span className="text-asu-maroon">Writing Tools</span>
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 max-w-7xl mx-auto">
-          <div className="bg-asu-white border border-asu-gold rounded-[24px] p-6 md:p-8 shadow-md flex flex-col justify-between hover:shadow-lg transition hover:scale-105 transition">
-            <div className="flex flex-col gap-3">
-              <FaQuoteRight className="text-3xl text-asu-maroon" />
-              <h3 className="text-xl md:text-2xl font-bold text-asu-black">Citation Generator</h3>
-              <p className="text-asu-gray">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 max-w-4xl mx-auto">
+          <div className="group tools-card-bg rounded-3xl p-6 flex flex-col min-h-[340px] text-left transition-shadow duration-200 shadow-[0_12px_28px_rgba(0,0,0,0.25),0_4px_10px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.04)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.28),0_6px_12px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.05)]">
+            <FaQuoteRight className="text-2xl text-asu-gray shrink-0 transition-colors duration-300 group-hover:text-asu-gold" />
+            <div className="flex flex-col justify-end flex-1 mt-auto pt-6">
+              <h3 className="text-lg font-semibold text-white tracking-tight">Citation Generator</h3>
+              <p className="text-sm text-white/80 leading-relaxed mt-1.5">
                 Generate perfect citations in APA, MLA, Chicago, and more formats with our easy-to-use tool.
               </p>
+              <button className="mt-4 text-sm font-medium text-white hover:text-asu-gold transition-colors w-fit">
+                Try Now →
+              </button>
             </div>
-            <button className="mt-6 bg-asu-maroon text-asu-white font-semibold px-6 py-2 rounded-full w-fit self-start shadow hover:scale-105 transition hover:bg-asu-maroon/90">
-              Try Now
-            </button>
           </div>
 
-          <div className="bg-asu-white border border-asu-gold rounded-[24px] p-6 md:p-8 shadow-md flex flex-col justify-between hover:shadow-lg transition hover:scale-105 transition">
-            <div className="flex flex-col gap-3">
-              <FaBookOpen className="text-3xl text-asu-maroon" />
-              <h3 className="text-xl md:text-2xl font-bold text-asu-black">Writing Guide</h3>
-              <p className="text-asu-gray">
+          <Link
+            href="/Opening"
+            className="group tools-card-bg rounded-3xl p-6 flex flex-col min-h-[340px] text-left transition-shadow duration-200 shadow-[0_12px_28px_rgba(0,0,0,0.25),0_4px_10px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.04)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.28),0_6px_12px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.05)]"
+          >
+            <FaBookOpen className="text-2xl text-asu-gray shrink-0 transition-colors duration-300 group-hover:text-asu-gold" />
+            <div className="flex flex-col justify-end flex-1 mt-auto pt-6">
+              <h3 className="text-lg font-semibold text-white tracking-tight">Writing Guide</h3>
+              <p className="text-sm text-white/80 leading-relaxed mt-1.5">
                 Get inspired with our interactive writing guide to overcome writer&apos;s block.
               </p>
+              <span className="mt-4 text-sm font-medium text-white group-hover:text-asu-gold transition-colors w-fit">
+                Try Now →
+              </span>
             </div>
-            <Link href="/Opening" className="mt-6 bg-asu-maroon text-asu-white font-semibold px-6 py-2 rounded-full w-fit self-start shadow hover:scale-105 transition hover:bg-asu-maroon/90">
-              Try Now
-            </Link>
-          </div>
+          </Link>
 
-          <div className="bg-asu-white border border-asu-gold rounded-[24px] p-6 md:p-8 shadow-md flex flex-col justify-between hover:shadow-lg transition hover:scale-105 transition">
-            <div className="flex flex-col gap-3">
-              <FaRegStickyNote className="text-3xl text-asu-maroon" />
-              <h3 className="text-xl md:text-2xl font-bold text-asu-black">Notebook</h3>
-              <p className="text-asu-gray">
+          <Link
+            href="/Notebook"
+            className="group tools-card-bg rounded-3xl p-6 flex flex-col min-h-[340px] text-left transition-shadow duration-200 shadow-[0_12px_28px_rgba(0,0,0,0.25),0_4px_10px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.04)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.28),0_6px_12px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.05)]"
+          >
+            <FaRegStickyNote className="text-2xl text-asu-gray shrink-0 transition-colors duration-300 group-hover:text-asu-gold" />
+            <div className="flex flex-col justify-end flex-1 mt-auto pt-6">
+              <h3 className="text-lg font-semibold text-white tracking-tight">Notebook</h3>
+              <p className="text-sm text-white/80 leading-relaxed mt-1.5">
                 Save your progress, notes, and drafts in your personal notebook as you work.
               </p>
+              <span className="mt-4 text-sm font-medium text-white group-hover:text-asu-gold transition-colors w-fit">
+                Try Now →
+              </span>
             </div>
-            <Link
-              href="/Notebook"
-              className="mt-6 bg-asu-maroon text-asu-white font-semibold px-6 py-2 rounded-full w-fit self-start shadow hover:scale-105 transition hover:bg-asu-maroon/90"
-            >
-              Try Now
-            </Link>
-          </div>
+          </Link>
+        </div>
         </div>
       </section>
+
+      <ContactSection />
     </div>
   );
 };

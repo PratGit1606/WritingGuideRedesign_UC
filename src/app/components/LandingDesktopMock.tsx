@@ -10,7 +10,7 @@ export default function LandingDesktopMock() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ['start 90%', 'end 10%'],
+    offset: ['start 0.7', 'end 0.25'],
   });
   const progress = useSpring(scrollYProgress, {
     stiffness: 80,
@@ -18,18 +18,21 @@ export default function LandingDesktopMock() {
     mass: 0.6,
   });
 
-  const y = useTransform(progress, [0, 0.45, 1], [120, 0, -72]);
-  const rotateX = useTransform(progress, [0, 0.45, 1], [22, 0, -8]);
-  const scale = useTransform(progress, [0, 0.45, 1], [0.86, 1, 0.93]);
-  const shadowOpacity = useTransform(progress, [0, 0.45], [0.2, 0.5]);
+  const y = useTransform(progress, [0, 0.4, 0.7, 1], [56, 0, -24, -48]);
+  const rotateX = useTransform(progress, [0, 0.4, 0.7, 1], [14, 0, -4, -6]);
+  const scale = useTransform(progress, [0, 0.4, 0.7, 1], [0.92, 1, 0.98, 0.95]);
+  const shadowOpacity = useTransform(progress, [0, 0.4], [0.15, 0.45]);
 
   return (
     <div
       ref={ref}
-      className="w-full max-w-5xl mx-auto mt-10 md:mt-14"
+      className="w-full max-w-5xl mx-auto -mt-2 md:-mt-6 lg:-mt-10"
       style={{ perspective: '1400px' }}
     >
       <motion.div
+        initial={{ opacity: 0, y: 32 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 0.61, 0.36, 1], delay: 0.3 }}
         style={{
           y,
           rotateX,
