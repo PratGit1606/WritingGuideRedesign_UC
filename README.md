@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+██╗    ██╗██████╗ ██╗████████╗██╗███╗   ██╗ ██████╗      ██████╗ ██╗   ██╗██╗██████╗ ███████╗
+██║    ██║██╔══██╗██║╚══██╔══╝██║████╗  ██║██╔════╝     ██╔════╝ ██║   ██║██║██╔══██╗██╔════╝
+██║ █╗ ██║██████╔╝██║   ██║   ██║██╔██╗ ██║██║  ███╗    ██║  ███╗██║   ██║██║██║  ██║█████╗  
+██║███╗██║██╔══██╗██║   ██║   ██║██║╚██╗██║██║   ██║    ██║   ██║██║   ██║██║██║  ██║██╔══╝  
+╚███╔███╔╝██║  ██║██║   ██║   ██║██║ ╚████║╚██████╔╝    ╚██████╔╝╚██████╔╝██║██████╔╝███████╗
+ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝   ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝      ╚═════╝  ╚═════╝ ╚═╝╚═════╝ ╚══════╝
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### *Personalized writing assistance for ASU students, from first idea to final draft.*
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-writing--guide.vercel.app-FFC627?style=for-the-badge&labelColor=1a1a1a)](https://writing-guide-redesign-uc-blush.vercel.app/)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+</div>
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ✦ What is the Writing Guide?
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The **ASU Writing Guide** is a web application built for Arizona State University students to get real, structured support throughout the entire writing process. Not just grammar checking, but genuine guidance from blank page to polished draft.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Whether you're staring at an empty document at 11pm or polishing a final research paper, the Writing Guide meets you where you are.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ✦ Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 📓 Writing Studio (Notebook)
+A full in-browser document editor, purpose-built for the writing process.
+
+- **Rich text editing** powered by TipTap — bold, italic, underline, headings, lists, blockquotes
+- **Auto-save** syncs to the cloud every 600ms as you type, no manual saving needed
+- **Favourites** to star your most important notes for quick access
+- **Open in Google Doc** to export any note directly to a new Google Doc in one click
+- **Persistent storage** via Upstash Redis so your notes survive refreshes and browser restarts
+
+### 📚 Writing Modules
+Structured, interactive lessons organized by writing stage:
+
+| Module | What it covers |
+|--------|---------------|
+| **Analyzing** | Understanding your assignment, identifying requirements |
+| **Brainstorming** | Generating and organizing ideas before you write |
+| **Drafting** | Getting words on the page, structure and flow |
+| **Researching** | Finding credible sources, evaluating evidence, taking notes |
+| **Revision** | Strengthening arguments, clarity, and coherence |
+| **Editing** | Grammar, style, sentence-level polish |
+| **Citing** | APA, MLA, Chicago and citations done right |
+
+### 🎯 Emotion-Based Recommendations
+Tell the app how you're feeling about your writing ("I have no ideas", "my draft is messy", "I'm panicking about citations") and it maps you directly to the modules most relevant to your situation.
+
+### 🛠️ Writing Tools
+- **Citation Generator** for APA, MLA, Chicago and more
+- **Writing Guide** for interactive step-by-step writing walkthroughs
+- **Notebook** for personal note storage with cloud sync
+
+---
+
+## ✦ About
+
+The Writing Guide complements ASU's Writing Centers. It is not a replacement for human tutors, but a tool that helps students show up to those sessions (and to their assignments) better prepared.
+
+---
+
+<div align="center">
+
+**Created by [University College, Arizona State University](https://uc.asu.edu/)**
+
+*Made with 🖊️ for ASU students*
+
+[Visit the app](https://writing-guide-redesign-uc-blush.vercel.app/)
+
+</div>
