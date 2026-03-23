@@ -77,7 +77,12 @@ export async function PUT(req: Request) {
 
 export async function DELETE(req: Request) {
   try {
-    const { id } = await req.json();
+    const { id, deleteAll } = await req.json();
+
+    if (deleteAll === true) {
+      await redis.del(NOTES_KEY);
+      return NextResponse.json({ success: true });
+    }
 
     const notesRaw = await redis.lrange(NOTES_KEY, 0, -1);
     const notes = notesRaw.map(parseNote);

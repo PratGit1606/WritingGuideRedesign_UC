@@ -19,6 +19,7 @@ import {
   Download,
   Trash2,
   ChevronDown,
+  Eraser,
 } from "lucide-react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -83,6 +84,7 @@ function NotebookPageInner() {
   const [fontSize, setFontSize] = useState(DEFAULT_FONT_SIZE);
   const [isCustomFontSize, setIsCustomFontSize] = useState(false);
   const [isStyleMenuOpen, setIsStyleMenuOpen] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const isCreatingRef = useRef(false);
   const isSettingContentRef = useRef(false);
   const styleMenuRef = useRef<HTMLDivElement>(null);
@@ -435,6 +437,24 @@ function NotebookPageInner() {
     }
   };
 
+  const handleClearAll = async () => {
+    try {
+      const res = await fetch("/api/save-note", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ deleteAll: true }),
+      });
+      if (!res.ok) throw new Error("Clear all failed");
+      setNotes([]);
+      setActiveNoteId(null);
+      editor?.commands.setContent("");
+    } catch (err) {
+      console.error("Failed to clear all notes:", err);
+    } finally {
+      setShowClearConfirm(false);
+    }
+  };
+
   const displayTitle = activeNote ? (activeNote.title.trim() || "Untitled") : "";
 
   const moduleBarTitle =
@@ -468,6 +488,35 @@ function NotebookPageInner() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans text-asu-black">
+
+      {/* Clear All confirmation modal */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-base font-semibold text-asu-black">Clear all notes?</h2>
+              <p className="text-sm text-asu-gray">This will permanently delete all your notes. This action cannot be undone.</p>
+            </div>
+            <div className="flex items-center gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => setShowClearConfirm(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-asu-black bg-[#f1f1f1] hover:bg-gray-200 transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleClearAll}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition"
+              >
+                Clear all
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <header
         className="sticky top-0 z-50 bg-white border-b border-asu-gray/20 shadow-[0px_2px_12px_rgba(0,0,0,0.08)] shrink-0"
         style={{ height: HEADER_H }}
@@ -546,6 +595,20 @@ function NotebookPageInner() {
               <Search className="size-5 text-asu-gray shrink-0" />
             </div>
           </div>
+
+          {activeTab !== "modules" && notes.length > 0 && (
+            <div className="px-4 pb-1 shrink-0 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowClearConfirm(true)}
+                className="flex items-center gap-1.5 text-xs text-asu-gray hover:text-red-600 transition py-1"
+              >
+                <Eraser className="size-3.5" />
+                Clear all
+              </button>
+            </div>
+          )}
+
           <div className="flex-1 overflow-auto px-4 pt-2 pb-6 min-h-0">
             <div className="space-y-0">
               {activeTab === "modules" ? (
