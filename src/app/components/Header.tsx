@@ -21,10 +21,10 @@ const Header: React.FC = () => {
     return (
         <header
             className={cn(
-                "bg-white fixed top-0 left-0 w-full z-50 transition-colors duration-300 ease-in-out",
+                "bg-asu-white fixed top-0 left-0 w-full z-50 transition-colors duration-300 ease-in-out",
                 isScrolled
-                    ? "bg-white/70 backdrop-blur-md border-b border-white/30 shadow-md text-black"
-                    : "bg-transparent text-black"
+                    ? "bg-asu-white/85 backdrop-blur-md border-b border-asu-gray/15 shadow-md text-asu-black"
+                    : "bg-transparent text-asu-black"
             )}
             role="banner"
         >
@@ -35,17 +35,15 @@ const Header: React.FC = () => {
                     </Link>
 
                     <nav className="hidden md:flex gap-8 text-lg" aria-label="Main navigation">
-                        <Link href="/" className="hover:text-yellow-500">Home</Link>
-                        <a href="#" className="hover:text-yellow-500">Resources</a>
-                        <a href="#" className="hover:text-yellow-500">Tutors</a>
-                        <a href="#" className="hover:text-yellow-500">About</a>
-                        <a href="#" className="hover:text-yellow-500">Contact</a>
+                        <Link href="/" className="hover:text-asu-maroon transition-colors">Home</Link>
+                        <a href="https://tutoring.asu.edu/" className="hover:text-asu-maroon transition-colors">Tutors</a>
+                        <Link href="/#contact" className="hover:text-asu-maroon transition-colors">Contact</Link>
                     </nav>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <button className="text-black text-lg">Sign in</button>
-                    <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800">Get Started</button>
+                    <button type="button" className="text-asu-black text-lg hover:text-asu-maroon transition-colors">Sign in</button>
+                    <Link href="/Notebook" className="bg-asu-black  text-asu-white px-4 py-2 rounded-full hover:bg-asu-maroon/90 text-base font-medium">Open notebook</Link>
                 </div>
             </div>
         </header>

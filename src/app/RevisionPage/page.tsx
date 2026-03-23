@@ -47,7 +47,7 @@ const RevisionPage = () => {
                         <div className="space-y-6">
                             <h1 className="text-3xl font-bold leading-snug">
                                 Time to polish and perfect, <br />
-                                <span className="underline decoration-yellow-400 font-extrabold">
+                                <span className="underline decoration-asu-gold font-extrabold">
                                     Let’s turn rough drafts into Refined Writing!
                                 </span>
                             </h1>

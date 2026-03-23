@@ -1,80 +1,117 @@
 import { NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
 
-const redis = Redis.fromEnv();
-const NOTES_KEY = "notes"; 
+interface Note {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  isFavourite: boolean;
+}
 
-console.log("URL", process.env.UPSTASH_REDIS_REST_URL);
-console.log("TOKEN", process.env.UPSTASH_REDIS_REST_TOKEN?.slice(0,6));
+const redis = Redis.fromEnv();
+const NOTES_KEY = "notes";
+const normalizeId = (id: unknown): string => String(id);
+const parseNote = (n: unknown): Note => {
+  if (typeof n === "string") return JSON.parse(n) as Note;
+  return n as Note;
+};
 
 export async function POST(req: Request) {
-  const { title, content } = await req.json();
+  try {
+    const { title, content } = await req.json();
 
-  const newNote = {
-    id: Date.now(),
-    title,
-    content,
-    createdAt: new Date().toISOString(),
-  };
+    const newNote: Note = {
+      id: crypto.randomUUID(),
+      title: title ?? "Untitled",
+      content: content ?? "",
+      createdAt: new Date().toISOString(),
+      isFavourite: false,
+    };
 
-  await redis.lpush(NOTES_KEY, JSON.stringify(newNote));
+    await redis.lpush(NOTES_KEY, JSON.stringify(newNote));
 
-  return NextResponse.json({ success: true, note: newNote });
+    return NextResponse.json({ success: true, note: newNote });
+  } catch (err) {
+    console.error("save-note POST error:", err);
+    return NextResponse.json(
+      { success: false, error: "Failed to create note" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PUT(req: Request) {
-  const { id, title, content } = await req.json();
+  try {
+    const { id, title, content, isFavourite } = await req.json();
 
-  // fetch all notes
-  const notesRaw = await redis.lrange(NOTES_KEY, 0, -1);
-  const notes = notesRaw.map((n: string) => JSON.parse(n));
+    const notesRaw = await redis.lrange(NOTES_KEY, 0, -1);
+    const notes = notesRaw.map(parseNote);
+    const normalizedId = normalizeId(id);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updatedNotes = notes.map((note: any) =>
-    note.id === id ? { ...note, title, content } : note
-  );
+    const updatedNotes = notes.map((note) =>
+      normalizeId(note.id) === normalizedId
+        ? {
+            ...note,
+            title: title !== undefined ? title : note.title,
+            content: content !== undefined ? content : note.content,
+            isFavourite: isFavourite !== undefined ? isFavourite : note.isFavourite,
+          }
+        : note
+    );
 
-  // overwrite the list in Redis
-  if (updatedNotes.length > 0) {
-    await redis.del(NOTES_KEY);
-    await redis.rpush(NOTES_KEY, ...updatedNotes.map((n) => JSON.stringify(n)));
+    if (updatedNotes.length > 0) {
+      await redis.del(NOTES_KEY);
+      await redis.rpush(NOTES_KEY, ...updatedNotes.map((n) => JSON.stringify(n)));
+    }
+
+    return NextResponse.json({ success: true, id });
+  } catch (err) {
+    console.error("save-note PUT error:", err);
+    return NextResponse.json(
+      { success: false, error: "Failed to update note" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ success: true, id });
 }
 
-// DELETE
 export async function DELETE(req: Request) {
-  const { id } = await req.json();
+  try {
+    const { id } = await req.json();
 
-  const notesRaw = await redis.lrange(NOTES_KEY, 0, -1);
-  const notes = notesRaw.map((n: string) => JSON.parse(n));
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updatedNotes = notes.filter((note: any) => note.id !== id);
+    const notesRaw = await redis.lrange(NOTES_KEY, 0, -1);
+    const notes = notesRaw.map(parseNote);
+    const normalizedId = normalizeId(id);
 
-  await redis.del(NOTES_KEY);
-  if (updatedNotes.length > 0) {
-    await redis.rpush(NOTES_KEY, ...updatedNotes.map((n) => JSON.stringify(n)));
+    const updatedNotes = notes.filter(
+      (note) => normalizeId(note.id) !== normalizedId
+    );
+
+    await redis.del(NOTES_KEY);
+    if (updatedNotes.length > 0) {
+      await redis.rpush(NOTES_KEY, ...updatedNotes.map((n) => JSON.stringify(n)));
+    }
+
+    return NextResponse.json({ success: true, id });
+  } catch (err) {
+    console.error("save-note DELETE error:", err);
+    return NextResponse.json(
+      { success: false, error: "Failed to delete note" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ success: true, id });
 }
 
 export async function GET() {
-  const notesRaw = await redis.lrange(NOTES_KEY, 0, -1);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const notes = notesRaw.map((n: any) => {
-    if (typeof n === "string") {
-      try {
-        return JSON.parse(n);
-      } catch {
-        return n;
-      }
-    }
-    return n;
-  });
-
-  return NextResponse.json({ notes });
+  try {
+    const notesRaw = await redis.lrange(NOTES_KEY, 0, -1);
+    const notes = notesRaw.map(parseNote);
+    return NextResponse.json({ notes });
+  } catch (err) {
+    console.error("save-note GET error:", err);
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch notes" },
+      { status: 500 }
+    );
+  }
 }
-

@@ -1,185 +1,814 @@
 "use client";
-import { useEffect, useState } from "react";
 
-export default function NotebookPage() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [notes, setNotes] = useState<any[]>([]);
-  const [activeNoteId, setActiveNoteId] = useState<number | null>(null);
+import { useEffect, useState, useRef, useCallback, Suspense } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  ArrowLeft,
+  PenLine,
+  Star,
+  Search,
+  Bold,
+  Italic,
+  Underline,
+  List,
+  ListOrdered,
+  Quote,
+  FileText,
+  Plus,
+  Download,
+  Trash2,
+  ChevronDown,
+} from "lucide-react";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import UnderlineExtension from "@tiptap/extension-underline";
+import Placeholder from "@tiptap/extension-placeholder";
+import { TextStyle } from "@tiptap/extension-text-style";
+import { FontSize } from "@tiptap/extension-font-size";
+import { TextSelection } from "prosemirror-state";
+import ModuleSidebarAccordion from "../components/module-lessons/ModuleSidebarAccordion";
+import ModuleLessonCanvas from "../components/module-lessons/ModuleLessonCanvas";
+import { getSectionMeta } from "../components/module-lessons/moduleSectionRegistry";
+
+const HEADER_H = 56;
+const SIDEBAR_W = 401;
+const DOC_WIDTH = 816;
+const DOC_MIN_HEIGHT = 1056;
+const DEFAULT_FONT_SIZE = 11;
+
+type ModuleKey = "analyzing" | "brainstorming" | "drafting" | "revision" | "editing" | "citing" | "researching";
+
+const EMOTION_TO_MODULE: Record<string, ModuleKey> = {
+  lost_assignment: "analyzing",
+  asking_assignment: "analyzing",
+  no_ideas: "brainstorming",
+  brain_blank: "brainstorming",
+  messy_draft: "drafting",
+  dont_know_start: "drafting",
+  weak_argument: "revision",
+  does_it_make_sense: "revision",
+  fix_grammar: "editing",
+  sounds_off: "editing",
+  citations_panic: "citing",
+  citing_right: "citing",
+};
+
+function formatRelativeTime(dateStr: string): string {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffMins < 1) return "Just now";
+  if (diffMins < 60) return `${diffMins} min ago`;
+  if (diffHours < 24) return `${diffHours} hr ago`;
+  if (diffDays < 7) return `${diffDays} days ago`;
+  return date.toLocaleDateString();
+}
+
+function NotebookPageInner() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [notes, setNotes] = useState<{ id: string; title: string; content: string; createdAt: string; isFavourite?: boolean }[]>([]);
+  const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<"notes" | "modules" | "favourites">("notes");
+  const [recommendedModules, setRecommendedModules] = useState<ModuleKey[]>([]);
+  const [selectedModuleSectionId, setSelectedModuleSectionId] = useState<string | null>(null);
+  const [expandedModuleKey, setExpandedModuleKey] = useState<ModuleKey | null>(null);
+  const [formatActive, setFormatActive] = useState({ bold: false, italic: false, underline: false });
+  const [blockFormat, setBlockFormat] = useState<"p" | "h1" | "h2" | "h3">("p");
+  const [fontSize, setFontSize] = useState(DEFAULT_FONT_SIZE);
+  const [isCustomFontSize, setIsCustomFontSize] = useState(false);
+  const [isStyleMenuOpen, setIsStyleMenuOpen] = useState(false);
+  const isCreatingRef = useRef(false);
+  const isSettingContentRef = useRef(false);
+  const styleMenuRef = useRef<HTMLDivElement>(null);
+  const activeNoteIdRef = useRef<string | null>(null);
+  const activeTitleRef = useRef<string>("Untitled");
+  const activeFavouriteRef = useRef<boolean>(false);
+  const latestHTMLRef = useRef<string>("");
+  const saveTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     fetch("/api/save-note", { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
-        setNotes(data.notes);
-        if (data.notes.length > 0) setActiveNoteId(data.notes[0].id);
+        const list = data.notes ?? [];
+        setNotes(list);
+        if (list.length > 0) {
+          setActiveNoteId((prev) => prev ?? list[0].id);
+        }
       });
   }, []);
 
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("writingGuide_selectedEmotionKeys_v1");
+      if (!raw) return;
+      const emotionKeys = JSON.parse(raw) as string[];
+      const moduleSet = new Set<ModuleKey>();
+      for (const key of emotionKeys) {
+        const mk = EMOTION_TO_MODULE[key];
+        if (mk) moduleSet.add(mk);
+      }
+      const list = Array.from(moduleSet);
+      setRecommendedModules(list);
+      if (list.length > 0) setActiveTab("modules");
+    } catch {
+    }
+  }, []);
 
-  const activeNote = notes.find((note) => note.id === activeNoteId);
+  const handleNavigateModuleSection = useCallback(
+    (id: string) => {
+      setSelectedModuleSectionId(id);
+      const meta = getSectionMeta(id);
+      if (meta) setExpandedModuleKey(meta.moduleKey);
+      router.replace(`/Notebook?tab=modules&section=${encodeURIComponent(id)}`, { scroll: false });
+    },
+    [router]
+  );
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    const section = searchParams.get("section");
+    if (tab === "modules") setActiveTab("modules");
+    if (section) {
+      setSelectedModuleSectionId(section);
+      const meta = getSectionMeta(section);
+      if (meta) setExpandedModuleKey(meta.moduleKey);
+    }
+  }, [searchParams]);
+
+  const activeNote = notes.find((n) => n.id === activeNoteId);
+  const filteredNotes = searchQuery.trim()
+    ? notes.filter(
+        (n) =>
+          n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (n.content && n.content.replace(/<[^>]*>/g, "").toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : notes;
+  const favouriteNotes = notes.filter((n) => n.isFavourite);
+  const displayNotes =
+    activeTab === "notes"
+      ? filteredNotes
+      : activeTab === "favourites"
+        ? favouriteNotes
+        : [];
+
+  const normalizeHTML = (html: string) => {
+    const text = html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+    return text.length === 0 ? "" : html;
+  };
+
+  useEffect(() => {
+    activeNoteIdRef.current = activeNoteId;
+    activeTitleRef.current = activeNote?.title?.trim() || "Untitled";
+    activeFavouriteRef.current = !!activeNote?.isFavourite;
+  }, [activeNoteId, activeNote]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!activeNote) return;
+    const title = e.target.value.trim() || "Untitled";
     setNotes((prev) =>
-      prev.map((note) =>
-        note.id === activeNoteId ? { ...note, title: e.target.value } : note
-      )
+      prev.map((note) => (note.id === activeNoteId ? { ...note, title } : note))
     );
+    activeTitleRef.current = title;
+    if (latestHTMLRef.current !== undefined) {
+      if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = window.setTimeout(() => {
+        if (activeNoteIdRef.current === null) return;
+        void fetch("/api/save-note", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: activeNoteIdRef.current,
+            title,
+            content: latestHTMLRef.current,
+            isFavourite: activeFavouriteRef.current,
+          }),
+        });
+      }, 600);
+    }
   };
 
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (!activeNote) return;
-    setNotes((prev) =>
-      prev.map((note) =>
-        note.id === activeNoteId ? { ...note, content: e.target.value } : note
-      )
-    );
+  const handleNewNote = async (
+    initialContent: string = ""
+  ): Promise<{ note: { id: string; title: string; content: string; createdAt: string; isFavourite: boolean } } | undefined> => {
+    if (isCreatingRef.current) return;
+    isCreatingRef.current = true;
+    try {
+      const res = await fetch("/api/save-note", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: "Untitled", content: initialContent }),
+      });
+      const text = await res.text();
+      let data: {
+        note?: { id: string; title: string; content: string; createdAt: string; isFavourite?: boolean };
+        success?: boolean;
+      };
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        data = {};
+      }
+
+      const note = data?.note ?? {
+        id: crypto.randomUUID(),
+        title: "Untitled",
+        content: initialContent,
+        createdAt: new Date().toISOString(),
+        isFavourite: false,
+      };
+
+      const normalisedNote = {
+        ...note,
+        content: note.content ?? initialContent ?? "",
+        isFavourite: !!note.isFavourite,
+      };
+
+      setNotes((prev) => [normalisedNote, ...prev]);
+      setActiveNoteId(normalisedNote.id);
+      return { note: normalisedNote };
+    } finally {
+      isCreatingRef.current = false;
+    }
   };
 
-  const handleSave = async () => {
-    if (!activeNote) return;
-
-    await fetch("/api/save-note", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: activeNote.id,
-        title: activeNote.title,
-        content: activeNote.content,
+  const editor = useEditor({
+    immediatelyRender: false,
+    extensions: [
+      StarterKit.configure({
+        heading: { levels: [1, 2, 3] },
       }),
-    });
+      TextStyle,
+      FontSize,
+      UnderlineExtension,
+      Placeholder.configure({
+        placeholder: "Start typing to create a new document...",
+        emptyEditorClass: "is-editor-empty",
+        emptyNodeClass: "is-empty",
+      }),
+    ],
+    content: activeNote?.content ?? "",
+    onUpdate: ({ editor }) => {
+      if (isSettingContentRef.current) return;
+      const html = normalizeHTML(editor.getHTML());
+      latestHTMLRef.current = html;
+
+      if (activeNoteIdRef.current === null) {
+        void handleNewNote(html);
+        return;
+      }
+
+      const id = activeNoteIdRef.current;
+      setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, content: html } : n)));
+
+      if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = window.setTimeout(() => {
+        void fetch("/api/save-note", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id,
+            title: activeTitleRef.current,
+            content: html,
+            isFavourite: activeFavouriteRef.current,
+          }),
+        });
+      }, 600);
+    },
+    editorProps: {
+      attributes: {
+        class: "doc-canvas",
+      },
+      handleDOMEvents: {
+        mousedown: (view) => {
+          const isEmpty = view.state.doc.textContent.trim().length === 0;
+          if (!isEmpty) return false;
+          const tr = view.state.tr.setSelection(TextSelection.create(view.state.doc, 1));
+          view.dispatch(tr);
+          return true;
+        },
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (!editor) return;
+
+    const updateToolbar = () => {
+      setFormatActive({
+        bold: editor.isActive("bold"),
+        italic: editor.isActive("italic"),
+        underline: editor.isActive("underline"),
+      });
+
+      if (editor.isActive("heading", { level: 1 })) setBlockFormat("h1");
+      else if (editor.isActive("heading", { level: 2 })) setBlockFormat("h2");
+      else if (editor.isActive("heading", { level: 3 })) setBlockFormat("h3");
+      else setBlockFormat("p");
+
+      const textStyleAttrs = editor.getAttributes("textStyle") as { fontSize?: string };
+      const currentFontSize = textStyleAttrs?.fontSize;
+      if (typeof currentFontSize === "string" && currentFontSize.trim() !== "") {
+        const px = parseFloat(currentFontSize);
+        if (!Number.isNaN(px)) {
+          setFontSize(px);
+          setIsCustomFontSize(true);
+        } else {
+          setFontSize(DEFAULT_FONT_SIZE);
+          setIsCustomFontSize(false);
+        }
+      } else {
+        setFontSize(DEFAULT_FONT_SIZE);
+        setIsCustomFontSize(false);
+      }
+    };
+
+    updateToolbar();
+    editor.on("selectionUpdate", updateToolbar);
+    editor.on("transaction", updateToolbar);
+    return () => {
+      editor.off("selectionUpdate", updateToolbar);
+      editor.off("transaction", updateToolbar);
+    };
+  }, [editor]);
+
+  useEffect(() => {
+    if (!editor) return;
+    const target = activeNote?.content ?? "";
+    const current = normalizeHTML(editor.getHTML());
+    if (current === target) return;
+
+    isSettingContentRef.current = true;
+    editor.commands.setContent(target || "");
+    setTimeout(() => {
+      isSettingContentRef.current = false;
+    }, 0);
+  }, [activeNoteId, editor]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!isStyleMenuOpen) return;
+    const onMouseDown = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (!styleMenuRef.current?.contains(target)) {
+        setIsStyleMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, [isStyleMenuOpen]);
+
+  const getTypePreviewPx = (tag: "p" | "h1" | "h2" | "h3") => {
+    if (isCustomFontSize) return fontSize;
+    if (tag === "p") return fontSize;
+    if (tag === "h1") return fontSize * 2.36;
+    if (tag === "h2") return fontSize * 1.27;
+    return fontSize * 1.09;
   };
 
-  const handleNewNote = async () => {
-    const res = await fetch("/api/save-note", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: "Untitled Note",
-        content: "",
-      }),
-    });
-    const data = await res.json();
+  const typeButtonLabel =
+    blockFormat === "p" ? "Normal text" : blockFormat === "h1" ? "Title" : blockFormat === "h2" ? "Subtitle" : "Heading 3";
 
-    setNotes((prev) => [data.note, ...prev]);
-    setActiveNoteId(data.note.id);
+  const textTypeOptions: { label: string; value: "p" | "h1" | "h2" | "h3" }[] = [
+    { label: "Normal text", value: "p" },
+    { label: "Title", value: "h1" },
+    { label: "Subtitle", value: "h2" },
+    { label: "Heading 1", value: "h1" },
+    { label: "Heading 2", value: "h2" },
+    { label: "Heading 3", value: "h3" },
+  ];
+
+  const handleFormat = (command: string) => {
+    if (!editor) return;
+    switch (command) {
+      case "bold":
+        editor.chain().focus().toggleBold().run();
+        return;
+      case "italic":
+        editor.chain().focus().toggleItalic().run();
+        return;
+      case "underline":
+        editor.chain().focus().toggleUnderline().run();
+        return;
+      case "insertUnorderedList":
+        editor.chain().focus().toggleBulletList().run();
+        return;
+      case "insertOrderedList":
+        editor.chain().focus().toggleOrderedList().run();
+        return;
+      case "blockquote":
+        editor.chain().focus().toggleBlockquote().run();
+        return;
+      default:
+        return;
+    }
+  };
+
+  const handleBlockFormat = (tag: "p" | "h1" | "h2" | "h3") => {
+    if (!editor) return;
+    if (tag === "p") { editor.chain().focus().setParagraph().run(); return; }
+    if (tag === "h1") { editor.chain().focus().setHeading({ level: 1 }).run(); return; }
+    if (tag === "h2") { editor.chain().focus().setHeading({ level: 2 }).run(); return; }
+    if (tag === "h3") { editor.chain().focus().setHeading({ level: 3 }).run(); return; }
   };
 
   const handleDelete = async () => {
     if (!activeNote) return;
-
-    await fetch("/api/save-note", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: activeNote.id }),
-    });
-
-    setNotes((prev) => prev.filter((note) => note.id !== activeNote.id));
-    setActiveNoteId(null);
+    try {
+      const res = await fetch("/api/save-note", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: activeNote.id }),
+      });
+      if (!res.ok) throw new Error("Delete failed");
+      const remainingNotes = notes.filter((n) => n.id !== activeNote.id);
+      setNotes(remainingNotes);
+      setActiveNoteId(remainingNotes[0]?.id ?? null);
+    } catch (err) {
+      console.error("Failed to delete note:", err);
+    }
   };
 
+  const displayTitle = activeNote ? (activeNote.title.trim() || "Untitled") : "";
+
+  const moduleBarTitle =
+    selectedModuleSectionId !== null
+      ? getSectionMeta(selectedModuleSectionId)?.label ?? "Module"
+      : "Writing modules";
+
+  const handleToggleFavourite = async () => {
+    if (!activeNote) return;
+    const next = !activeNote.isFavourite;
+    setNotes((prev) =>
+      prev.map((n) => (n.id === activeNoteId ? { ...n, isFavourite: next } : n))
+    );
+    try {
+      await fetch("/api/save-note", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: activeNote.id,
+          title: activeNote.title || "Untitled",
+          content: activeNote.content,
+          isFavourite: next,
+        }),
+      });
+    } catch {
+      setNotes((prev) =>
+        prev.map((n) => (n.id === activeNoteId ? { ...n, isFavourite: !next } : n))
+      );
+    }
+  };
 
   return (
-    <div
-      className="min-h-screen flex flex-col bg-[url(/background.jpeg)] bg-cover bg-center text-black"
-      style={{ fontFamily: "Arial, sans-serif" }}
-    >
-
-      <div className="flex flex-1 p-8 gap-8">
-        <aside className="w-1/3 bg-white border rounded-xl shadow-md p-6 space-y-6">
-          <h2 className="text-3xl font-bold">
-            My <span style={{ color: "#FFC627" }}>Notebook</span>
-          </h2>
-          <div className="space-y-4">
-            {notes.map((note) => (
-              <div
-                key={note.id}
-                onClick={() => setActiveNoteId(note.id)}
-                className={`p-4 rounded-xl shadow-sm border cursor-pointer transition ${note.id === activeNoteId
-                  ? "bg-[#FFC627] text-black"
-                  : "bg-white hover:bg-gray-100"
-                  }`}
-              >
-                <h3 className="text-sm font-semibold">{note.title}</h3>
-                <p className="text-xs text-black line-clamp-2 mt-1">
-                  {note.content}
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {new Date(note.createdAt).toLocaleDateString()}
-                </p>
+    <div className="min-h-screen bg-white flex flex-col font-sans text-asu-black">
+      <header
+        className="sticky top-0 z-50 bg-white border-b border-asu-gray/20 shadow-[0px_2px_12px_rgba(0,0,0,0.08)] shrink-0"
+        style={{ height: HEADER_H }}
+      >
+        <div className="max-w-[1440px] mx-auto px-5 h-full flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <Link href="/" className="text-asu-black hover:opacity-80" aria-label="Back">
+              <ArrowLeft className="size-8" strokeWidth={2} />
+            </Link>
+            <div className="flex items-center gap-2">
+              <div className="bg-asu-black p-1.5 rounded-md shadow-sm">
+                <PenLine className="size-5 text-asu-gold" strokeWidth={2} />
               </div>
-            ))}
+              <span className="text-xl font-bold text-asu-black">Writing Studio</span>
+            </div>
+          </div>
+          <Link
+            href="/"
+            className="bg-asu-black text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-asu-black/90 transition"
+          >
+            Log out
+          </Link>
+        </div>
+      </header>
+
+      <div className="flex flex-1 min-h-0 relative">
+        <aside
+          className="fixed left-0 top-[56px] bottom-0 w-[401px] border-r border-asu-gray/50 flex flex-col bg-white overflow-hidden z-30"
+          style={{ top: HEADER_H, width: SIDEBAR_W }}
+        >
+          <div className="px-4 pt-4 pb-2 shrink-0">
+            <div className="h-12 rounded-[40px] bg-[#f1f1f1] flex items-center relative p-1">
+              <div
+                className="absolute top-1 bottom-1 w-[calc(33.33%-2px)] rounded-[60px] bg-asu-black transition-all duration-200 ease-out"
+                style={{
+                  left:
+                    activeTab === "notes"
+                      ? "4px"
+                      : activeTab === "modules"
+                        ? "calc(33.33% + 2px)"
+                        : "calc(66.66% + 2px)",
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => { setActiveTab("notes"); router.replace("/Notebook", { scroll: false }); }}
+                className={`relative z-10 flex-1 text-sm font-normal py-2 rounded-full transition ${activeTab === "notes" ? "text-white" : "text-asu-gray"}`}
+              >
+                My notes
+              </button>
+              <button
+                type="button"
+                onClick={() => { setActiveTab("modules"); router.replace("/Notebook?tab=modules", { scroll: false }); }}
+                className={`relative z-10 flex-1 text-sm font-normal py-2 rounded-full transition ${activeTab === "modules" ? "text-white" : "text-asu-gray"}`}
+              >
+                Modules
+              </button>
+              <button
+                type="button"
+                onClick={() => { setActiveTab("favourites"); router.replace("/Notebook", { scroll: false }); }}
+                className={`relative z-10 flex-1 text-sm font-normal py-2 rounded-full transition ${activeTab === "favourites" ? "text-white" : "text-asu-gray"}`}
+              >
+                Favourites
+              </button>
+            </div>
+          </div>
+          <div className="px-4 py-2 shrink-0">
+            <div className="flex items-center justify-between gap-2 bg-[#f1f1f1] rounded-lg px-4 py-3">
+              <input
+                type="text"
+                placeholder={activeTab === "modules" ? "Search modules" : "Search"}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 bg-transparent text-sm text-asu-gray placeholder:text-asu-gray outline-none"
+              />
+              <Search className="size-5 text-asu-gray shrink-0" />
+            </div>
+          </div>
+          <div className="flex-1 overflow-auto px-4 pt-2 pb-6 min-h-0">
+            <div className="space-y-0">
+              {activeTab === "modules" ? (
+                <ModuleSidebarAccordion
+                  searchQuery={searchQuery}
+                  recommendedModules={recommendedModules}
+                  expandedModuleKey={expandedModuleKey}
+                  onExpandedChange={setExpandedModuleKey}
+                  selectedSectionId={selectedModuleSectionId}
+                  onSelectSection={(id) => {
+                    setSelectedModuleSectionId(id);
+                    const meta = getSectionMeta(id);
+                    if (meta) setExpandedModuleKey(meta.moduleKey);
+                    router.replace(`/Notebook?tab=modules&section=${encodeURIComponent(id)}`, { scroll: false });
+                  }}
+                />
+              ) : (
+                displayNotes.map((note) => {
+                  const isActive = note.id === activeNoteId;
+                  return (
+                    <button
+                      key={note.id}
+                      type="button"
+                      onClick={() => setActiveNoteId(note.id)}
+                      className={`w-full text-left flex items-center justify-between px-3 py-5 rounded transition ${
+                        isActive
+                          ? "bg-asu-gold border border-asu-black"
+                          : "border-b border-[#dedede] text-asu-gray hover:bg-gray-50/80"
+                      }`}
+                    >
+                      <span className={`text-sm truncate pr-2 ${isActive ? "font-bold text-asu-black" : "font-normal"}`}>
+                        {note.title?.trim() || "Untitled"}
+                      </span>
+                      <span className={`text-xs shrink-0 ${isActive ? "text-asu-gray" : ""}`}>
+                        {formatRelativeTime(note.createdAt)}
+                      </span>
+                    </button>
+                  );
+                })
+              )}
+            </div>
           </div>
         </aside>
 
-        <section className="flex-1 bg-white border rounded-xl shadow-md">
-          <div className="flex justify-between items-center bg-black text-white px-6 py-3 rounded-t-xl">
-            <h2 className="text-[25px] font-bold">Writer’s Section</h2>
-            <button
-              onClick={handleNewNote}
-              className="bg-[#FFC627] px-4 py-2 rounded-full border border-black font-semibold hover:bg-yellow-500 text-black"
+        <main
+          className="flex-1 flex flex-col min-w-0 min-h-0 ml-[401px] bg-[#f7f7f7]"
+          style={{ marginLeft: SIDEBAR_W }}
+        >
+          <div className="sticky top-14 z-40 shrink-0 bg-white border-b border-asu-gray/50 px-4 py-3 flex flex-col gap-2 shadow-sm">
+            {activeTab === "modules" ? (
+              <div className="flex items-center min-h-[44px]">
+                <p className="text-xl font-semibold text-asu-black truncate pr-4">{moduleBarTitle}</p>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-start">
+                  <input
+                    type="text"
+                    value={displayTitle}
+                    onChange={handleTitleChange}
+                    disabled={!activeNote}
+                    className="text-xl font-normal text-asu-black text-left bg-transparent border-none outline-none focus:ring-0 w-full max-w-md disabled:bg-transparent disabled:placeholder:text-asu-black/40"
+                    placeholder={activeNote ? "Untitled" : "Start typing to create a document"}
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-4 h-11">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => handleFormat("bold")}
+                        className={`p-2 rounded-md size-9 flex items-center justify-center transition ${formatActive.bold ? "bg-asu-gray/20 text-asu-black" : "bg-[#f1f1f1] hover:bg-gray-200 text-asu-black"}`}
+                        aria-label="Bold"
+                      >
+                        <Bold className="size-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleFormat("italic")}
+                        className={`p-2 rounded-md size-9 flex items-center justify-center transition ${formatActive.italic ? "bg-asu-gray/20 text-asu-black" : "bg-[#f1f1f1] hover:bg-gray-200 text-asu-black"}`}
+                        aria-label="Italic"
+                      >
+                        <Italic className="size-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleFormat("underline")}
+                        className={`p-2 rounded-md size-9 flex items-center justify-center transition ${formatActive.underline ? "bg-asu-gray/20 text-asu-black" : "bg-[#f1f1f1] hover:bg-gray-200 text-asu-black"}`}
+                        aria-label="Underline"
+                      >
+                        <Underline className="size-4" />
+                      </button>
+                      <button type="button" onClick={() => handleFormat("insertUnorderedList")} className="p-2 rounded-md bg-[#f1f1f1] hover:bg-gray-200 transition size-9 flex items-center justify-center text-asu-black" aria-label="Bullet list">
+                        <List className="size-4" />
+                      </button>
+                      <button type="button" onClick={() => handleFormat("insertOrderedList")} className="p-2 rounded-md bg-[#f1f1f1] hover:bg-gray-200 transition size-9 flex items-center justify-center text-asu-black" aria-label="Numbered list">
+                        <ListOrdered className="size-4" />
+                      </button>
+                      <button type="button" onClick={() => handleFormat("blockquote")} className="p-2 rounded-md bg-[#f1f1f1] hover:bg-gray-200 transition size-9 flex items-center justify-center text-asu-black" aria-label="Quote">
+                        <Quote className="size-4" />
+                      </button>
+                    </div>
+                    <div className="relative" ref={styleMenuRef}>
+                      <button
+                        type="button"
+                        onClick={() => setIsStyleMenuOpen((v) => !v)}
+                        className="bg-[#f9f9f9] rounded px-3 py-2 h-9 text-sm text-asu-black border-0 cursor-pointer min-w-[140px] focus:ring-2 focus:ring-asu-gold/50 focus:outline-none flex items-center justify-between gap-2"
+                        aria-label="Paragraph style"
+                      >
+                        <span className="truncate">{typeButtonLabel}</span>
+                        <ChevronDown className={`size-4 text-asu-gray transition ${isStyleMenuOpen ? "rotate-180" : ""}`} />
+                      </button>
+                      {isStyleMenuOpen && (
+                        <div
+                          className="absolute left-0 mt-2 bg-white border border-asu-gray/20 shadow-lg rounded-lg overflow-hidden z-50"
+                          role="menu"
+                          aria-label="Paragraph style options"
+                        >
+                          {textTypeOptions.map((opt) => {
+                            const isActive = opt.value === blockFormat;
+                            return (
+                              <button
+                                key={opt.label}
+                                type="button"
+                                onClick={() => { handleBlockFormat(opt.value); setIsStyleMenuOpen(false); }}
+                                className={`w-full text-left px-3 py-2 hover:bg-gray-50 transition flex items-center justify-between gap-3 ${isActive ? "bg-asu-gold/20" : ""}`}
+                                role="menuitem"
+                              >
+                                <span className={`text-sm ${isActive ? "text-asu-black font-semibold" : "text-asu-gray"}`}>
+                                  {opt.label}
+                                </span>
+                                <span
+                                  className={`leading-none ${opt.value === "p" ? "font-normal" : "font-bold"} text-asu-black`}
+                                  style={{ fontSize: `${getTypePreviewPx(opt.value)}px` }}
+                                >
+                                  Aa
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 bg-[#f9f9f9] rounded px-3 py-2 h-9">
+                      <span className="text-sm text-asu-gray">Arial</span>
+                      <ChevronDown className="size-4 text-asu-gray" />
+                    </div>
+                    <div className="flex items-center rounded bg-[#f9f9f9] overflow-hidden h-9">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!editor) return;
+                          const next = Math.max(8, fontSize - 1);
+                          if (next === DEFAULT_FONT_SIZE) { editor.chain().focus().unsetFontSize().run(); }
+                          else { editor.chain().focus().setFontSize(`${next}px`).run(); }
+                        }}
+                        className="p-2 hover:bg-gray-200"
+                      >
+                        <span className="text-xs text-asu-black">−</span>
+                      </button>
+                      <span className="text-sm text-asu-black px-2 min-w-[2rem] text-center">{fontSize}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!editor) return;
+                          const next = Math.min(72, fontSize + 1);
+                          if (next === DEFAULT_FONT_SIZE) { editor.chain().focus().unsetFontSize().run(); }
+                          else { editor.chain().focus().setFontSize(`${next}px`).run(); }
+                        }}
+                        className="p-2 hover:bg-gray-200"
+                      >
+                        <span className="text-xs text-asu-black">+</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={handleToggleFavourite}
+                      disabled={!activeNote}
+                      className={`size-9 rounded flex items-center justify-center transition disabled:opacity-50 ${activeNote?.isFavourite ? "bg-asu-gold/20 text-asu-gold hover:bg-asu-gold/30" : "bg-[#f1f1f1] text-asu-gray hover:text-asu-black hover:bg-gray-200"}`}
+                      aria-label={activeNote?.isFavourite ? "Remove from favourites" : "Add to favourites"}
+                    >
+                      <Star className={`size-5 ${activeNote?.isFavourite ? "fill-asu-gold" : ""}`} strokeWidth={1.5} />
+                    </button>
+                    <button type="button" className="flex items-center gap-2 px-4 py-2 rounded-lg border border-asu-black text-sm text-asu-black hover:bg-gray-100">
+                      Open in doc
+                      <FileText className="size-5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleNewNote("")}
+                      className="size-9 rounded flex items-center justify-center bg-asu-black text-white hover:bg-asu-black/90 shadow-sm"
+                      aria-label="New note"
+                    >
+                      <Plus className="size-5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDelete}
+                      disabled={!activeNote}
+                      className="size-9 rounded flex items-center justify-center bg-[#f1f1f1] text-asu-black hover:bg-gray-200 disabled:opacity-50"
+                      aria-label="Delete"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                    <button type="button" className="size-9 rounded flex items-center justify-center bg-[#f1f1f1] text-asu-black hover:bg-gray-200" aria-label="Download">
+                      <Download className="size-4" />
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          <div
+            className={`flex-1 overflow-auto py-8 min-h-0 flex justify-center px-4 ${activeTab === "modules" ? "hidden" : ""}`}
+            aria-hidden={activeTab === "modules"}
+          >
+            <div
+              className="bg-white border border-asu-gray/50 rounded shadow-sm overflow-hidden flex flex-col"
+              style={{ width: DOC_WIDTH, minHeight: DOC_MIN_HEIGHT }}
             >
-              + New Note
-            </button>
-          </div>
-
-          {activeNote ? (
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-semibold mb-1">Title</label>
-                <input
-                  type="text"
-                  value={activeNote.title}
-                  onChange={handleTitleChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-black"
-                />
+              <div
+                className="flex-1 min-h-[1000px] w-full px-12 py-12 text-asu-black leading-6 tracking-[0.28px] font-normal focus:outline-none"
+                style={{ fontFamily: "Arial, sans-serif" }}
+              >
+                <EditorContent editor={editor} />
               </div>
-              <div>
-                <label className="block text-sm font-semibold mb-1">Content</label>
-                <textarea
-                  value={activeNote.content}
-                  onChange={handleContentChange}
-                  className="w-full border border-gray-300 rounded-lg p-3 h-40 bg-white resize-none text-black"
-                />
-              </div>
-              <div className="flex justify-end gap-4">
-                <button
-                  onClick={handleDelete}
-                  className="bg-black text-white px-6 py-2 rounded-full border border-black font-semibold hover:bg-red-800"
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={handleSave}
-                  className="bg-[#FFC627] px-6 py-2 rounded-full border border-black font-semibold hover:bg-yellow-500 text-black"
-                >
-                  Save
-                </button>
-              </div>
-
             </div>
-          ) : (
-            <p className="p-6">No note selected</p>
-          )}
-        </section>
-      </div>
-
-      <footer className="bg-[#FFC627] text-black py-4 text-sm border-t">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <div className="flex gap-6">
-            <a href="#">Maps and Locations</a>
-            <a href="#">Jobs</a>
-            <a href="#">Directory</a>
-            <a href="#">Contact ASU</a>
-            <a href="#">My ASU</a>
           </div>
-          <span className="font-bold">#1 in the U.S. for innovation</span>
-        </div>
-        <div className="text-center text-xs mt-2 text-black">
-          © Copyright and Trademark · Accessibility · Privacy · Terms of Use ·
-          Emergency · COVID-19 Information
-        </div>
-      </footer>
+
+          <div
+            className={`flex-1 overflow-auto py-6 min-h-0 flex justify-center px-4 bg-[#f7f7f7] ${activeTab !== "modules" ? "hidden" : ""}`}
+            aria-hidden={activeTab !== "modules"}
+          >
+            {selectedModuleSectionId ? (
+              <ModuleLessonCanvas
+                sectionId={selectedModuleSectionId}
+                onNavigateToSection={handleNavigateModuleSection}
+              />
+            ) : (
+              <p className="text-center text-asu-gray py-16 text-sm max-w-md">
+                Select a module section from the left to open the lesson.
+              </p>
+            )}
+          </div>
+        </main>
+      </div>
     </div>
+  );
+}
+
+export default function NotebookPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[#f7f7f7] text-asu-gray text-sm">
+          Loading notebook…
+        </div>
+      }
+    >
+      <NotebookPageInner />
+    </Suspense>
   );
 }

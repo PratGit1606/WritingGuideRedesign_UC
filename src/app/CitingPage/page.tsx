@@ -50,7 +50,7 @@ const CitingPage = () => {
             <div className="space-y-6">
               <h1 className="text-3xl font-bold leading-snug">
                 Time to give credit where it’s due, <br />
-                <span className="underline decoration-yellow-400 font-extrabold">
+                <span className="underline decoration-asu-gold font-extrabold">
                   Let’s turn research into Ready-to-Submit writing!
                 </span>
               </h1>
@@ -105,7 +105,7 @@ const CitingPage = () => {
 
             <Link
               href="/CitingPage2"
-              className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
+              className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md text-center"
             >
               Continue to Section 1 of Citing
             </Link>

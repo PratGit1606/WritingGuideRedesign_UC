@@ -42,7 +42,7 @@ const ResearchingPage4 = () => {
           <Tabs pageId="ResearchingPage4" overviewContent={
             <div className="py-4">
               <div className="flex items-center shadow-md mb-6">
-                <div className="w-5 bg-[#FFC627] self-stretch"></div>
+                <div className="w-5 bg-asu-gold self-stretch"></div>
                 <div className="px-4 py-3 bg-white w-full">
                   <h2 className="text-xl font-bold text-gray-900">Section 3</h2>
                 </div>
@@ -115,7 +115,7 @@ const ResearchingPage4 = () => {
             <Link href="/ResearchingPage3" className="px-6 py-3 rounded-lg border-2 border-black text-black bg-white hover:bg-gray-300 shadow-sm text-center">
               Go Back to Section 2 of Researching
             </Link>
-            <Link href="/ResearchingPage5" className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center">
+            <Link href="/ResearchingPage5" className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md text-center">
               Continue to Outro of Researching
             </Link>
           </div>

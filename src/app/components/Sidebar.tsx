@@ -239,7 +239,7 @@ export default function Sidebar({
                     <div className="px-4 pt-2 pb-1">
                       <button
                         onClick={() => navigate(step.url ?? "/")}
-                        className="text-xs text-gray-700 bg-white border border-gray-200 px-3 py-1 rounded-full hover:bg-[#FFC627] hover:text-black transition"
+                        className="text-xs text-gray-700 bg-white border border-gray-200 px-3 py-1 rounded-full hover:bg-asu-gold hover:text-black transition"
                         aria-label={`Go to ${step.label} main page`}
                       >
                         Open {step.label} Home page
@@ -251,7 +251,7 @@ export default function Sidebar({
                         <button
                           key={child.id}
                           onClick={() => navigate(child.url)}
-                          className={`flex w-full items-center justify-between px-4 py-3 text-left text-sm rounded-lg shadow-sm transition ${isCurrent ? "bg-[#FFC627] text-black font-semibold" : "bg-[#E4E4E4] text-black hover:bg-[#FFC627]"
+                          className={`flex w-full items-center justify-between px-4 py-3 text-left text-sm rounded-lg shadow-sm transition ${isCurrent ? "bg-asu-gold text-black font-semibold" : "bg-[#E4E4E4] text-black hover:bg-asu-gold"
                             }`}
                         >
                           <span className="font-medium flex-1 pr-4">{child.label}</span>

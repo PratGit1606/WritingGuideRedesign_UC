@@ -22,7 +22,7 @@ export default function GrammarExercise() {
         <span className="font-bold"> Can you revise it to enhance its overall quality?</span>
       </p>
       <p className="font-semibold mb-2">Unedited Paragraph:</p>
-      <div className="bg-[#FFC627] p-4 rounded-lg shadow-sm text-sm text-black mb-6">
+      <div className="bg-asu-gold p-4 rounded-lg shadow-sm text-sm text-black mb-6">
         {unedited}
       </div>
       <p className="font-semibold mb-2">
@@ -32,12 +32,12 @@ export default function GrammarExercise() {
         value={userInput}
         onChange={(e) => setUserInput(e.target.value)}
         placeholder="Enter Your Answer Here"
-        className="w-full p-3 border rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-4"
+        className="w-full p-3 border rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-asu-gold mb-4"
         rows={5}
       />
       <button
         onClick={() => setShowAnswer(true)}
-        className="w-full py-3 rounded-lg bg-black text-white font-semibold hover:bg-gray-800 transition"
+        className="w-full py-3 rounded-lg bg-asu-maroon text-asu-white font-semibold hover:bg-asu-maroon/90 transition"
       >
         Show Answer
       </button>
@@ -54,7 +54,7 @@ export default function GrammarExercise() {
                 setShowAnswer(false);
                 setUserInput("");
               }}
-              className="px-4 py-1 text-sm font-medium bg-yellow-400 hover:bg-yellow-500 text-black rounded-lg"
+              className="px-4 py-1 text-sm font-medium bg-asu-gold hover:bg-asu-gold/90 text-asu-black rounded-lg"
             >
               Try Again
             </button>

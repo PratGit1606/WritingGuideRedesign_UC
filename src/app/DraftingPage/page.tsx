@@ -61,7 +61,7 @@ const DraftingPage = () => {
                   >
                     <path
                       d="M2 10 C20 2, 60 16, 110 8 C160 0, 190 12, 218 9"
-                      stroke="#FFC627"
+                      stroke="var(--asu-gold)"
                       strokeWidth="10"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -123,7 +123,7 @@ const DraftingPage = () => {
 
             <Link
               href="/DraftingPage2"
-              className="px-6 py-3 rounded-lg border-2 border-[#FFC627] bg-black text-white hover:bg-gray-800 shadow-md text-center"
+              className="px-6 py-3 rounded-lg border-2 border-asu-gold bg-black text-white hover:bg-gray-800 shadow-md text-center"
             >
               Continue to Section 1 of Drafting
             </Link>
