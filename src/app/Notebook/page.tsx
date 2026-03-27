@@ -489,7 +489,6 @@ function NotebookPageInner() {
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans text-asu-black">
 
-      {/* Clear All confirmation modal */}
       {showClearConfirm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 flex flex-col gap-4">
