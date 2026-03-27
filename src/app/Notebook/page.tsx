@@ -28,6 +28,8 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { FontSize } from "@tiptap/extension-font-size";
 import { TextSelection } from "prosemirror-state";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import ModuleSidebarAccordion from "../components/module-lessons/ModuleSidebarAccordion";
 import ModuleLessonCanvas from "../components/module-lessons/ModuleLessonCanvas";
 import { getSectionMeta } from "../components/module-lessons/moduleSectionRegistry";
@@ -38,7 +40,18 @@ const DOC_WIDTH = 816;
 const DOC_MIN_HEIGHT = 1056;
 const DEFAULT_FONT_SIZE = 11;
 
-type ModuleKey = "analyzing" | "brainstorming" | "drafting" | "revision" | "editing" | "citing" | "researching";
+
+type ModuleKey =
+  | "analyzing"
+  | "brainstorming"
+  | "drafting"
+  | "revision"
+  | "editing"
+  | "citing"
+  | "researching";
+
+type FormatKey = "bold" | "italic" | "underline";
+
 
 const EMOTION_TO_MODULE: Record<string, ModuleKey> = {
   lost_assignment: "analyzing",
@@ -55,6 +68,27 @@ const EMOTION_TO_MODULE: Record<string, ModuleKey> = {
   citing_right: "citing",
 };
 
+const INLINE_FORMAT_BUTTONS: {
+  key: FormatKey;
+  icon: React.ElementType;
+  label: string;
+}[] = [
+  { key: "bold", icon: Bold, label: "Bold" },
+  { key: "italic", icon: Italic, label: "Italic" },
+  { key: "underline", icon: Underline, label: "Underline" },
+];
+
+const BLOCK_FORMAT_BUTTONS: {
+  command: string;
+  icon: React.ElementType;
+  label: string;
+}[] = [
+  { command: "insertUnorderedList", icon: List, label: "Bullet list" },
+  { command: "insertOrderedList", icon: ListOrdered, label: "Numbered list" },
+  { command: "blockquote", icon: Quote, label: "Quote" },
+];
+
+
 function formatRelativeTime(dateStr: string): string {
   const date = new Date(dateStr);
   const now = new Date();
@@ -69,22 +103,38 @@ function formatRelativeTime(dateStr: string): string {
   return date.toLocaleDateString();
 }
 
+
 function NotebookPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [notes, setNotes] = useState<{ id: string; title: string; content: string; createdAt: string; isFavourite?: boolean }[]>([]);
+
+  const [notes, setNotes] = useState<
+    {
+      id: string;
+      title: string;
+      content: string;
+      createdAt: string;
+      isFavourite?: boolean;
+    }[]
+  >([]);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"notes" | "modules" | "favourites">("notes");
   const [recommendedModules, setRecommendedModules] = useState<ModuleKey[]>([]);
   const [selectedModuleSectionId, setSelectedModuleSectionId] = useState<string | null>(null);
   const [expandedModuleKey, setExpandedModuleKey] = useState<ModuleKey | null>(null);
-  const [formatActive, setFormatActive] = useState({ bold: false, italic: false, underline: false });
+  const [formatActive, setFormatActive] = useState<Record<FormatKey, boolean>>({
+    bold: false,
+    italic: false,
+    underline: false,
+  });
   const [blockFormat, setBlockFormat] = useState<"p" | "h1" | "h2" | "h3">("p");
   const [fontSize, setFontSize] = useState(DEFAULT_FONT_SIZE);
   const [isCustomFontSize, setIsCustomFontSize] = useState(false);
   const [isStyleMenuOpen, setIsStyleMenuOpen] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+
   const isCreatingRef = useRef(false);
   const isSettingContentRef = useRef(false);
   const styleMenuRef = useRef<HTMLDivElement>(null);
@@ -93,6 +143,8 @@ function NotebookPageInner() {
   const activeFavouriteRef = useRef<boolean>(false);
   const latestHTMLRef = useRef<string>("");
   const saveTimerRef = useRef<number | null>(null);
+  const docCanvasRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     fetch("/api/save-note", { method: "GET" })
@@ -105,6 +157,7 @@ function NotebookPageInner() {
         }
       });
   }, []);
+
 
   useEffect(() => {
     try {
@@ -119,16 +172,18 @@ function NotebookPageInner() {
       const list = Array.from(moduleSet);
       setRecommendedModules(list);
       if (list.length > 0) setActiveTab("modules");
-    } catch {
-    }
+    } catch {}
   }, []);
+
 
   const handleNavigateModuleSection = useCallback(
     (id: string) => {
       setSelectedModuleSectionId(id);
       const meta = getSectionMeta(id);
       if (meta) setExpandedModuleKey(meta.moduleKey);
-      router.replace(`/Notebook?tab=modules&section=${encodeURIComponent(id)}`, { scroll: false });
+      router.replace(`/Notebook?tab=modules&section=${encodeURIComponent(id)}`, {
+        scroll: false,
+      });
     },
     [router]
   );
@@ -144,15 +199,23 @@ function NotebookPageInner() {
     }
   }, [searchParams]);
 
+
   const activeNote = notes.find((n) => n.id === activeNoteId);
+
   const filteredNotes = searchQuery.trim()
     ? notes.filter(
         (n) =>
           n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (n.content && n.content.replace(/<[^>]*>/g, "").toLowerCase().includes(searchQuery.toLowerCase()))
+          (n.content &&
+            n.content
+              .replace(/<[^>]*>/g, "")
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()))
       )
     : notes;
+
   const favouriteNotes = notes.filter((n) => n.isFavourite);
+
   const displayNotes =
     activeTab === "notes"
       ? filteredNotes
@@ -161,15 +224,20 @@ function NotebookPageInner() {
         : [];
 
   const normalizeHTML = (html: string) => {
-    const text = html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+    const text = html
+      .replace(/<[^>]*>/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
     return text.length === 0 ? "" : html;
   };
+
 
   useEffect(() => {
     activeNoteIdRef.current = activeNoteId;
     activeTitleRef.current = activeNote?.title?.trim() || "Untitled";
     activeFavouriteRef.current = !!activeNote?.isFavourite;
   }, [activeNoteId, activeNote]);
+
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!activeNote) return;
@@ -196,9 +264,21 @@ function NotebookPageInner() {
     }
   };
 
+
   const handleNewNote = async (
     initialContent: string = ""
-  ): Promise<{ note: { id: string; title: string; content: string; createdAt: string; isFavourite: boolean } } | undefined> => {
+  ): Promise<
+    | {
+        note: {
+          id: string;
+          title: string;
+          content: string;
+          createdAt: string;
+          isFavourite: boolean;
+        };
+      }
+    | undefined
+  > => {
     if (isCreatingRef.current) return;
     isCreatingRef.current = true;
     try {
@@ -209,7 +289,13 @@ function NotebookPageInner() {
       });
       const text = await res.text();
       let data: {
-        note?: { id: string; title: string; content: string; createdAt: string; isFavourite?: boolean };
+        note?: {
+          id: string;
+          title: string;
+          content: string;
+          createdAt: string;
+          isFavourite?: boolean;
+        };
         success?: boolean;
       };
       try {
@@ -243,9 +329,7 @@ function NotebookPageInner() {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      StarterKit.configure({
-        heading: { levels: [1, 2, 3] },
-      }),
+      StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
       TextStyle,
       FontSize,
       UnderlineExtension,
@@ -284,14 +368,14 @@ function NotebookPageInner() {
       }, 600);
     },
     editorProps: {
-      attributes: {
-        class: "doc-canvas",
-      },
+      attributes: { class: "doc-canvas" },
       handleDOMEvents: {
         mousedown: (view) => {
           const isEmpty = view.state.doc.textContent.trim().length === 0;
           if (!isEmpty) return false;
-          const tr = view.state.tr.setSelection(TextSelection.create(view.state.doc, 1));
+          const tr = view.state.tr.setSelection(
+            TextSelection.create(view.state.doc, 1)
+          );
           view.dispatch(tr);
           return true;
         },
@@ -314,7 +398,9 @@ function NotebookPageInner() {
       else if (editor.isActive("heading", { level: 3 })) setBlockFormat("h3");
       else setBlockFormat("p");
 
-      const textStyleAttrs = editor.getAttributes("textStyle") as { fontSize?: string };
+      const textStyleAttrs = editor.getAttributes("textStyle") as {
+        fontSize?: string;
+      };
       const currentFontSize = textStyleAttrs?.fontSize;
       if (typeof currentFontSize === "string" && currentFontSize.trim() !== "") {
         const px = parseFloat(currentFontSize);
@@ -340,6 +426,7 @@ function NotebookPageInner() {
     };
   }, [editor]);
 
+
   useEffect(() => {
     if (!editor) return;
     const target = activeNote?.content ?? "";
@@ -353,64 +440,30 @@ function NotebookPageInner() {
     }, 0);
   }, [activeNoteId, editor]); // eslint-disable-line react-hooks/exhaustive-deps
 
+
   useEffect(() => {
     if (!isStyleMenuOpen) return;
     const onMouseDown = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (!styleMenuRef.current?.contains(target)) {
+      if (!styleMenuRef.current?.contains(e.target as Node)) {
         setIsStyleMenuOpen(false);
       }
     };
-
     document.addEventListener("mousedown", onMouseDown);
     return () => document.removeEventListener("mousedown", onMouseDown);
   }, [isStyleMenuOpen]);
 
-  const getTypePreviewPx = (tag: "p" | "h1" | "h2" | "h3") => {
-    if (isCustomFontSize) return fontSize;
-    if (tag === "p") return fontSize;
-    if (tag === "h1") return fontSize * 2.36;
-    if (tag === "h2") return fontSize * 1.27;
-    return fontSize * 1.09;
+  
+  const FORMAT_COMMANDS: Record<string, () => void> = {
+    bold: () => editor?.chain().focus().toggleBold().run(),
+    italic: () => editor?.chain().focus().toggleItalic().run(),
+    underline: () => editor?.chain().focus().toggleUnderline().run(),
+    insertUnorderedList: () => editor?.chain().focus().toggleBulletList().run(),
+    insertOrderedList: () => editor?.chain().focus().toggleOrderedList().run(),
+    blockquote: () => editor?.chain().focus().toggleBlockquote().run(),
   };
 
-  const typeButtonLabel =
-    blockFormat === "p" ? "Normal text" : blockFormat === "h1" ? "Title" : blockFormat === "h2" ? "Subtitle" : "Heading 3";
+  const handleFormat = (command: string) => FORMAT_COMMANDS[command]?.();
 
-  const textTypeOptions: { label: string; value: "p" | "h1" | "h2" | "h3" }[] = [
-    { label: "Normal text", value: "p" },
-    { label: "Title", value: "h1" },
-    { label: "Subtitle", value: "h2" },
-    { label: "Heading 1", value: "h1" },
-    { label: "Heading 2", value: "h2" },
-    { label: "Heading 3", value: "h3" },
-  ];
-
-  const handleFormat = (command: string) => {
-    if (!editor) return;
-    switch (command) {
-      case "bold":
-        editor.chain().focus().toggleBold().run();
-        return;
-      case "italic":
-        editor.chain().focus().toggleItalic().run();
-        return;
-      case "underline":
-        editor.chain().focus().toggleUnderline().run();
-        return;
-      case "insertUnorderedList":
-        editor.chain().focus().toggleBulletList().run();
-        return;
-      case "insertOrderedList":
-        editor.chain().focus().toggleOrderedList().run();
-        return;
-      case "blockquote":
-        editor.chain().focus().toggleBlockquote().run();
-        return;
-      default:
-        return;
-    }
-  };
 
   const handleBlockFormat = (tag: "p" | "h1" | "h2" | "h3") => {
     if (!editor) return;
@@ -419,6 +472,17 @@ function NotebookPageInner() {
     if (tag === "h2") { editor.chain().focus().setHeading({ level: 2 }).run(); return; }
     if (tag === "h3") { editor.chain().focus().setHeading({ level: 3 }).run(); return; }
   };
+
+  const adjustFontSize = (delta: 1 | -1) => {
+    if (!editor) return;
+    const next = Math.min(72, Math.max(8, fontSize + delta));
+    if (next === DEFAULT_FONT_SIZE) {
+      editor.chain().focus().unsetFontSize().run();
+    } else {
+      editor.chain().focus().setFontSize(`${next}px`).run();
+    }
+  };
+
 
   const handleDelete = async () => {
     if (!activeNote) return;
@@ -455,12 +519,42 @@ function NotebookPageInner() {
     }
   };
 
-  const displayTitle = activeNote ? (activeNote.title.trim() || "Untitled") : "";
+  const handleDownloadPDF = async () => {
+    const el = docCanvasRef.current;
+    if (!el || isDownloading) return;
+    setIsDownloading(true);
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        windowHeight: el.scrollHeight,
+        height: el.scrollHeight,
+      });
 
-  const moduleBarTitle =
-    selectedModuleSectionId !== null
-      ? getSectionMeta(selectedModuleSectionId)?.label ?? "Module"
-      : "Writing modules";
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({ unit: "pt", format: "a4", orientation: "portrait" });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+
+      const imgH = (canvas.height * pageW) / canvas.width;
+
+      let yOffset = 0;
+      while (yOffset < imgH) {
+        if (yOffset > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, -yOffset, pageW, imgH);
+        yOffset += pageH;
+      }
+
+      const filename = `${activeTitleRef.current || "note"}.pdf`;
+      pdf.save(filename);
+    } catch (err) {
+      console.error("PDF export failed:", err);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
 
   const handleToggleFavourite = async () => {
     if (!activeNote) return;
@@ -486,6 +580,40 @@ function NotebookPageInner() {
     }
   };
 
+
+  const displayTitle = activeNote ? activeNote.title.trim() || "Untitled" : "";
+
+  const moduleBarTitle =
+    selectedModuleSectionId !== null
+      ? (getSectionMeta(selectedModuleSectionId)?.label ?? "Module")
+      : "Writing modules";
+
+  const typeButtonLabel =
+    blockFormat === "p"
+      ? "Normal text"
+      : blockFormat === "h1"
+        ? "Title"
+        : blockFormat === "h2"
+          ? "Subtitle"
+          : "Heading 3";
+
+  const textTypeOptions: { label: string; value: "p" | "h1" | "h2" | "h3" }[] = [
+    { label: "Normal text", value: "p" },
+    { label: "Title", value: "h1" },
+    { label: "Subtitle", value: "h2" },
+    { label: "Heading 1", value: "h1" },
+    { label: "Heading 2", value: "h2" },
+    { label: "Heading 3", value: "h3" },
+  ];
+
+  const getTypePreviewPx = (tag: "p" | "h1" | "h2" | "h3") => {
+    if (isCustomFontSize) return fontSize;
+    if (tag === "p") return fontSize;
+    if (tag === "h1") return fontSize * 2.36;
+    if (tag === "h2") return fontSize * 1.27;
+    return fontSize * 1.09;
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans text-asu-black">
 
@@ -494,7 +622,9 @@ function NotebookPageInner() {
           <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 flex flex-col gap-4">
             <div className="flex flex-col gap-1">
               <h2 className="text-base font-semibold text-asu-black">Clear all notes?</h2>
-              <p className="text-sm text-asu-gray">This will permanently delete all your notes. This action cannot be undone.</p>
+              <p className="text-sm text-asu-gray">
+                This will permanently delete all your notes. This action cannot be undone.
+              </p>
             </div>
             <div className="flex items-center gap-3 justify-end">
               <button
@@ -542,8 +672,9 @@ function NotebookPageInner() {
       </header>
 
       <div className="flex flex-1 min-h-0 relative">
+
         <aside
-          className="fixed left-0 top-[56px] bottom-0 w-[401px] border-r border-asu-gray/50 flex flex-col bg-white overflow-hidden z-30"
+          className="fixed left-0 bottom-0 border-r border-asu-gray/50 flex flex-col bg-white overflow-hidden z-30"
           style={{ top: HEADER_H, width: SIDEBAR_W }}
         >
           <div className="px-4 pt-4 pb-2 shrink-0">
@@ -559,29 +690,27 @@ function NotebookPageInner() {
                         : "calc(66.66% + 2px)",
                 }}
               />
-              <button
-                type="button"
-                onClick={() => { setActiveTab("notes"); router.replace("/Notebook", { scroll: false }); }}
-                className={`relative z-10 flex-1 text-sm font-normal py-2 rounded-full transition ${activeTab === "notes" ? "text-white" : "text-asu-gray"}`}
-              >
-                My notes
-              </button>
-              <button
-                type="button"
-                onClick={() => { setActiveTab("modules"); router.replace("/Notebook?tab=modules", { scroll: false }); }}
-                className={`relative z-10 flex-1 text-sm font-normal py-2 rounded-full transition ${activeTab === "modules" ? "text-white" : "text-asu-gray"}`}
-              >
-                Modules
-              </button>
-              <button
-                type="button"
-                onClick={() => { setActiveTab("favourites"); router.replace("/Notebook", { scroll: false }); }}
-                className={`relative z-10 flex-1 text-sm font-normal py-2 rounded-full transition ${activeTab === "favourites" ? "text-white" : "text-asu-gray"}`}
-              >
-                Favourites
-              </button>
+              {(["notes", "modules", "favourites"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => {
+                    setActiveTab(tab);
+                    router.replace(
+                      tab === "modules" ? "/Notebook?tab=modules" : "/Notebook",
+                      { scroll: false }
+                    );
+                  }}
+                  className={`relative z-10 flex-1 text-sm font-normal py-2 rounded-full transition capitalize ${
+                    activeTab === tab ? "text-white" : "text-asu-gray"
+                  }`}
+                >
+                  {tab === "favourites" ? "Favourites" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
             </div>
           </div>
+
           <div className="px-4 py-2 shrink-0">
             <div className="flex items-center justify-between gap-2 bg-[#f1f1f1] rounded-lg px-4 py-3">
               <input
@@ -621,7 +750,10 @@ function NotebookPageInner() {
                     setSelectedModuleSectionId(id);
                     const meta = getSectionMeta(id);
                     if (meta) setExpandedModuleKey(meta.moduleKey);
-                    router.replace(`/Notebook?tab=modules&section=${encodeURIComponent(id)}`, { scroll: false });
+                    router.replace(
+                      `/Notebook?tab=modules&section=${encodeURIComponent(id)}`,
+                      { scroll: false }
+                    );
                   }}
                 />
               ) : (
@@ -638,7 +770,11 @@ function NotebookPageInner() {
                           : "border-b border-[#dedede] text-asu-gray hover:bg-gray-50/80"
                       }`}
                     >
-                      <span className={`text-sm truncate pr-2 ${isActive ? "font-bold text-asu-black" : "font-normal"}`}>
+                      <span
+                        className={`text-sm truncate pr-2 ${
+                          isActive ? "font-bold text-asu-black" : "font-normal"
+                        }`}
+                      >
                         {note.title?.trim() || "Untitled"}
                       </span>
                       <span className={`text-xs shrink-0 ${isActive ? "text-asu-gray" : ""}`}>
@@ -653,13 +789,15 @@ function NotebookPageInner() {
         </aside>
 
         <main
-          className="flex-1 flex flex-col min-w-0 min-h-0 ml-[401px] bg-[#f7f7f7]"
+          className="flex-1 flex flex-col min-w-0 min-h-0 bg-[#f7f7f7]"
           style={{ marginLeft: SIDEBAR_W }}
         >
           <div className="sticky top-14 z-40 shrink-0 bg-white border-b border-asu-gray/50 px-4 py-3 flex flex-col gap-2 shadow-sm">
             {activeTab === "modules" ? (
               <div className="flex items-center min-h-[44px]">
-                <p className="text-xl font-semibold text-asu-black truncate pr-4">{moduleBarTitle}</p>
+                <p className="text-xl font-semibold text-asu-black truncate pr-4">
+                  {moduleBarTitle}
+                </p>
               </div>
             ) : (
               <>
@@ -670,46 +808,44 @@ function NotebookPageInner() {
                     onChange={handleTitleChange}
                     disabled={!activeNote}
                     className="text-xl font-normal text-asu-black text-left bg-transparent border-none outline-none focus:ring-0 w-full max-w-md disabled:bg-transparent disabled:placeholder:text-asu-black/40"
-                    placeholder={activeNote ? "Untitled" : "Start typing to create a document"}
+                    placeholder={
+                      activeNote ? "Untitled" : "Start typing to create a document"
+                    }
                   />
                 </div>
+
                 <div className="flex items-center justify-between gap-4 h-11">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => handleFormat("bold")}
-                        className={`p-2 rounded-md size-9 flex items-center justify-center transition ${formatActive.bold ? "bg-asu-gray/20 text-asu-black" : "bg-[#f1f1f1] hover:bg-gray-200 text-asu-black"}`}
-                        aria-label="Bold"
-                      >
-                        <Bold className="size-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleFormat("italic")}
-                        className={`p-2 rounded-md size-9 flex items-center justify-center transition ${formatActive.italic ? "bg-asu-gray/20 text-asu-black" : "bg-[#f1f1f1] hover:bg-gray-200 text-asu-black"}`}
-                        aria-label="Italic"
-                      >
-                        <Italic className="size-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleFormat("underline")}
-                        className={`p-2 rounded-md size-9 flex items-center justify-center transition ${formatActive.underline ? "bg-asu-gray/20 text-asu-black" : "bg-[#f1f1f1] hover:bg-gray-200 text-asu-black"}`}
-                        aria-label="Underline"
-                      >
-                        <Underline className="size-4" />
-                      </button>
-                      <button type="button" onClick={() => handleFormat("insertUnorderedList")} className="p-2 rounded-md bg-[#f1f1f1] hover:bg-gray-200 transition size-9 flex items-center justify-center text-asu-black" aria-label="Bullet list">
-                        <List className="size-4" />
-                      </button>
-                      <button type="button" onClick={() => handleFormat("insertOrderedList")} className="p-2 rounded-md bg-[#f1f1f1] hover:bg-gray-200 transition size-9 flex items-center justify-center text-asu-black" aria-label="Numbered list">
-                        <ListOrdered className="size-4" />
-                      </button>
-                      <button type="button" onClick={() => handleFormat("blockquote")} className="p-2 rounded-md bg-[#f1f1f1] hover:bg-gray-200 transition size-9 flex items-center justify-center text-asu-black" aria-label="Quote">
-                        <Quote className="size-4" />
-                      </button>
+                      {INLINE_FORMAT_BUTTONS.map(({ key, icon: Icon, label }) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => handleFormat(key)}
+                          aria-label={label}
+                          className={`p-2 rounded-md size-9 flex items-center justify-center transition ${
+                            formatActive[key]
+                              ? "bg-asu-gray/20 text-asu-black"
+                              : "bg-[#f1f1f1] hover:bg-gray-200 text-asu-black"
+                          }`}
+                        >
+                          <Icon className="size-4" />
+                        </button>
+                      ))}
+
+                      {BLOCK_FORMAT_BUTTONS.map(({ command, icon: Icon, label }) => (
+                        <button
+                          key={command}
+                          type="button"
+                          onClick={() => handleFormat(command)}
+                          aria-label={label}
+                          className="p-2 rounded-md bg-[#f1f1f1] hover:bg-gray-200 transition size-9 flex items-center justify-center text-asu-black"
+                        >
+                          <Icon className="size-4" />
+                        </button>
+                      ))}
                     </div>
+
                     <div className="relative" ref={styleMenuRef}>
                       <button
                         type="button"
@@ -718,7 +854,11 @@ function NotebookPageInner() {
                         aria-label="Paragraph style"
                       >
                         <span className="truncate">{typeButtonLabel}</span>
-                        <ChevronDown className={`size-4 text-asu-gray transition ${isStyleMenuOpen ? "rotate-180" : ""}`} />
+                        <ChevronDown
+                          className={`size-4 text-asu-gray transition ${
+                            isStyleMenuOpen ? "rotate-180" : ""
+                          }`}
+                        />
                       </button>
                       {isStyleMenuOpen && (
                         <div
@@ -732,16 +872,31 @@ function NotebookPageInner() {
                               <button
                                 key={opt.label}
                                 type="button"
-                                onClick={() => { handleBlockFormat(opt.value); setIsStyleMenuOpen(false); }}
-                                className={`w-full text-left px-3 py-2 hover:bg-gray-50 transition flex items-center justify-between gap-3 ${isActive ? "bg-asu-gold/20" : ""}`}
+                                onClick={() => {
+                                  handleBlockFormat(opt.value);
+                                  setIsStyleMenuOpen(false);
+                                }}
+                                className={`w-full text-left px-3 py-2 hover:bg-gray-50 transition flex items-center justify-between gap-3 ${
+                                  isActive ? "bg-asu-gold/20" : ""
+                                }`}
                                 role="menuitem"
                               >
-                                <span className={`text-sm ${isActive ? "text-asu-black font-semibold" : "text-asu-gray"}`}>
+                                <span
+                                  className={`text-sm ${
+                                    isActive
+                                      ? "text-asu-black font-semibold"
+                                      : "text-asu-gray"
+                                  }`}
+                                >
                                   {opt.label}
                                 </span>
                                 <span
-                                  className={`leading-none ${opt.value === "p" ? "font-normal" : "font-bold"} text-asu-black`}
-                                  style={{ fontSize: `${getTypePreviewPx(opt.value)}px` }}
+                                  className={`leading-none ${
+                                    opt.value === "p" ? "font-normal" : "font-bold"
+                                  } text-asu-black`}
+                                  style={{
+                                    fontSize: `${getTypePreviewPx(opt.value)}px`,
+                                  }}
                                 >
                                   Aa
                                 </span>
@@ -751,52 +906,65 @@ function NotebookPageInner() {
                         </div>
                       )}
                     </div>
+
                     <div className="flex items-center gap-2 bg-[#f9f9f9] rounded px-3 py-2 h-9">
                       <span className="text-sm text-asu-gray">Arial</span>
                       <ChevronDown className="size-4 text-asu-gray" />
                     </div>
+
                     <div className="flex items-center rounded bg-[#f9f9f9] overflow-hidden h-9">
                       <button
                         type="button"
-                        onClick={() => {
-                          if (!editor) return;
-                          const next = Math.max(8, fontSize - 1);
-                          if (next === DEFAULT_FONT_SIZE) { editor.chain().focus().unsetFontSize().run(); }
-                          else { editor.chain().focus().setFontSize(`${next}px`).run(); }
-                        }}
+                        onClick={() => adjustFontSize(-1)}
                         className="p-2 hover:bg-gray-200"
+                        aria-label="Decrease font size"
                       >
                         <span className="text-xs text-asu-black">−</span>
                       </button>
-                      <span className="text-sm text-asu-black px-2 min-w-[2rem] text-center">{fontSize}</span>
+                      <span className="text-sm text-asu-black px-2 min-w-[2rem] text-center">
+                        {fontSize}
+                      </span>
                       <button
                         type="button"
-                        onClick={() => {
-                          if (!editor) return;
-                          const next = Math.min(72, fontSize + 1);
-                          if (next === DEFAULT_FONT_SIZE) { editor.chain().focus().unsetFontSize().run(); }
-                          else { editor.chain().focus().setFontSize(`${next}px`).run(); }
-                        }}
+                        onClick={() => adjustFontSize(1)}
                         className="p-2 hover:bg-gray-200"
+                        aria-label="Increase font size"
                       >
                         <span className="text-xs text-asu-black">+</span>
                       </button>
                     </div>
                   </div>
+
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
                       onClick={handleToggleFavourite}
                       disabled={!activeNote}
-                      className={`size-9 rounded flex items-center justify-center transition disabled:opacity-50 ${activeNote?.isFavourite ? "bg-asu-gold/20 text-asu-gold hover:bg-asu-gold/30" : "bg-[#f1f1f1] text-asu-gray hover:text-asu-black hover:bg-gray-200"}`}
-                      aria-label={activeNote?.isFavourite ? "Remove from favourites" : "Add to favourites"}
+                      className={`size-9 rounded flex items-center justify-center transition disabled:opacity-50 ${
+                        activeNote?.isFavourite
+                          ? "bg-asu-gold/20 text-asu-gold hover:bg-asu-gold/30"
+                          : "bg-[#f1f1f1] text-asu-gray hover:text-asu-black hover:bg-gray-200"
+                      }`}
+                      aria-label={
+                        activeNote?.isFavourite
+                          ? "Remove from favourites"
+                          : "Add to favourites"
+                      }
                     >
-                      <Star className={`size-5 ${activeNote?.isFavourite ? "fill-asu-gold" : ""}`} strokeWidth={1.5} />
+                      <Star
+                        className={`size-5 ${activeNote?.isFavourite ? "fill-asu-gold" : ""}`}
+                        strokeWidth={1.5}
+                      />
                     </button>
-                    <button type="button" className="flex items-center gap-2 px-4 py-2 rounded-lg border border-asu-black text-sm text-asu-black hover:bg-gray-100">
+
+                    <button
+                      type="button"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-asu-black text-sm text-asu-black hover:bg-gray-100"
+                    >
                       Open in doc
                       <FileText className="size-5" />
                     </button>
+
                     <button
                       type="button"
                       onClick={() => handleNewNote("")}
@@ -805,17 +973,50 @@ function NotebookPageInner() {
                     >
                       <Plus className="size-5" />
                     </button>
+
                     <button
                       type="button"
                       onClick={handleDelete}
                       disabled={!activeNote}
                       className="size-9 rounded flex items-center justify-center bg-[#f1f1f1] text-asu-black hover:bg-gray-200 disabled:opacity-50"
-                      aria-label="Delete"
+                      aria-label="Delete note"
                     >
                       <Trash2 className="size-4" />
                     </button>
-                    <button type="button" className="size-9 rounded flex items-center justify-center bg-[#f1f1f1] text-asu-black hover:bg-gray-200" aria-label="Download">
-                      <Download className="size-4" />
+
+                    <button
+                      type="button"
+                      onClick={handleDownloadPDF}
+                      disabled={!activeNote || isDownloading}
+                      className="size-9 rounded flex items-center justify-center bg-[#f1f1f1] text-asu-black hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                      aria-label={isDownloading ? "Generating PDF…" : "Download as PDF"}
+                      title="Download as PDF"
+                    >
+                      {isDownloading ? (
+                        // Simple spinner while generating
+                        <svg
+                          className="animate-spin size-4 text-asu-black"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8H4z"
+                          />
+                        </svg>
+                      ) : (
+                        <Download className="size-4" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -824,7 +1025,9 @@ function NotebookPageInner() {
           </div>
 
           <div
-            className={`flex-1 overflow-auto py-8 min-h-0 flex justify-center px-4 ${activeTab === "modules" ? "hidden" : ""}`}
+            className={`flex-1 overflow-auto py-8 min-h-0 flex justify-center px-4 ${
+              activeTab === "modules" ? "hidden" : ""
+            }`}
             aria-hidden={activeTab === "modules"}
           >
             <div
@@ -832,6 +1035,7 @@ function NotebookPageInner() {
               style={{ width: DOC_WIDTH, minHeight: DOC_MIN_HEIGHT }}
             >
               <div
+                ref={docCanvasRef}
                 className="flex-1 min-h-[1000px] w-full px-12 py-12 text-asu-black leading-6 tracking-[0.28px] font-normal focus:outline-none"
                 style={{ fontFamily: "Arial, sans-serif" }}
               >
@@ -841,7 +1045,9 @@ function NotebookPageInner() {
           </div>
 
           <div
-            className={`flex-1 overflow-auto py-6 min-h-0 flex justify-center px-4 bg-[#f7f7f7] ${activeTab !== "modules" ? "hidden" : ""}`}
+            className={`flex-1 overflow-auto py-6 min-h-0 flex justify-center px-4 bg-[#f7f7f7] ${
+              activeTab !== "modules" ? "hidden" : ""
+            }`}
             aria-hidden={activeTab !== "modules"}
           >
             {selectedModuleSectionId ? (
