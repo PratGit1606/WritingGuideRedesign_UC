@@ -19,11 +19,11 @@ const MODULE_LABEL: Record<ModuleKey, string> = {
 const MODULE_ORDER: ModuleKey[] = [
   "analyzing",
   "brainstorming",
+  "researching",
   "drafting",
   "revision",
   "editing",
   "citing",
-  "researching",
 ];
 
 function sectionsForModule(moduleKey: ModuleKey): ModuleSectionMeta[] {

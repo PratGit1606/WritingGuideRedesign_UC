@@ -1,10 +1,10 @@
 // ResearchingPage2.jsx
 import React from 'react';
 import Image from 'next/image';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../../Sidebar';
 import { Search } from "lucide-react";
-import ProgressSteps from '../components/ProgressSteps';
-import Tabs from '../components/Tabs';
+import ProgressSteps from '../../ProgressSteps';
+import Tabs from '../../Tabs';
 import Link from 'next/link';
 
 const ResearchingPage2 = () => {

@@ -12,15 +12,6 @@ import {
   ListChecks,
 } from "lucide-react";
 
-/**
- * Sidebar with:
- * - small "Go to section main page" under each top-level item (not a child style)
- * - client-side navigation via router.push with a loading overlay
- * - auto-expand section that matches the current page and keep it open until user toggles
- *
- * NOTE: URLs are set to follow your "AnalysingPage / AnalysingPage1 / AnalysingPage2" pattern.
- * Update URLs as needed to match your actual pages.
- */
 
 type ChildItem = {
   id: string;

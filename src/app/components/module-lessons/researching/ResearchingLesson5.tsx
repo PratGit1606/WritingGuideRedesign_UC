@@ -2,8 +2,8 @@
 'use client'
 import React from 'react';
 import Image from 'next/image';
-import Sidebar from '../components/Sidebar';
-import ProgressSteps from '../components/ProgressSteps';
+import Sidebar from '../../Sidebar';
+import ProgressSteps from '../../ProgressSteps';
 import { Search } from "lucide-react";
 import { useState } from "react";
 import Link from 'next/link';

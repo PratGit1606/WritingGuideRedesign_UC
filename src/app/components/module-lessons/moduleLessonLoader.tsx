@@ -22,6 +22,17 @@ export async function loadModuleLesson(sectionId: string): Promise<ComponentType
       return (await import("./brainstorming/BrainstormingLesson4")).default;
     case "brainstorming-5":
       return (await import("./brainstorming/BrainstormingLesson5")).default;
+    case "researching-1":
+      return (await import("./researching/ResearchingLesson1")).default;
+    case "researching-2":
+      return (await import("./researching/ResearchingLesson2")).default;
+    case "researching-3":
+      return (await import("./researching/ResearchingLesson3")).default;
+    case "researching-4":
+      return (await import("./researching/ResearchingLesson4")).default;
+    case "researching-5":
+      return (await import("./researching/ResearchingLesson5")).default;
+
     case "drafting-1":
       return (await import("./drafting/DraftingLesson1")).default;
     case "drafting-2":
